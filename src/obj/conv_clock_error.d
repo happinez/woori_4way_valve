@@ -1,0 +1,20 @@
+obj/conv_clock_error.o: \
+ ../../code/libraries/adc_conv_8133x/src/conv_clock_error.c \
+ ../../code/camcu_platform/config/../include/81332B02/eeprom_map.h \
+ ../../code/camcu_platform/config/../include/81332B02/memory_map.h \
+ ../../code/camcu_platform/config/../include/81332B02/memory_map_vectors.h \
+ ../../code/camcu_platform/config/../include/81332B02/syslib.h \
+ ../../code/camcu_platform/config/../include/81332B02/compiler_abstraction.h \
+ ../../code/camcu_platform/config/../include/81332B02/builtin_mlx16_common.h \
+ ../../code/camcu_platform/config/../include/81332B02/compiler_abstraction.h \
+ ../../code/camcu_platform/config/../include/81332B02/builtin_mlx16_common_inline_impl.h \
+ ../../code/camcu_platform/config/../include/81332B02/builtin_mlx16_common.h \
+ ../../code/camcu_platform/config/../include/81332B02/static_assert.h \
+ ../../code/camcu_platform/config/../include/81332B02/lib_miscio.h \
+ ../../code/camcu_platform/config/../include/81332B02/eeprom_parameters.h \
+ ../../code/camcu_platform/config/../include/81332B02/mathlib.h \
+ ../../code/camcu_platform/config/../include/81332B02/mlx16_cfg.h \
+ ../../code/camcu_platform/config/../include/81332B02/builtin_mlx16.h \
+ ../../code/camcu_platform/config/../include/81332B02/find_bits.h \
+ ../../code/camcu_platform/config/../include/81332B02/mathlib_inline.h \
+ ../../code/libraries/adc_conv_8133x/src/conv_clock_error.h

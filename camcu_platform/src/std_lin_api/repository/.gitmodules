@@ -1,0 +1,6 @@
+[submodule "tools/uncrustify-cfg-esw"]
+	path = tools/uncrustify-cfg-esw
+	url = ../../swcc-tools/uncrustify-cfg-esw.git
+[submodule "tools/coverity"]
+	path = tools/coverity
+	url = ../../swcc-tools/coverity.git

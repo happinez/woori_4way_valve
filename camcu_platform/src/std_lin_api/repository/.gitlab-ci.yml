@@ -1,0 +1,218 @@
+variables:
+  GIT_STRATEGY: fetch
+  GIT_SUBMODULE_STRATEGY: recursive
+  GIT_SSL_NO_VERIFY: "true"
+  OPT_BVL_INSTSET_OPT_MLX_GCC_1: "OPT_BUILD_VARS_LIST=\"OPT_INSTSET\" OPT_INSTSET=\"-mlx16-e8 -mlx16-ex -mlx16-8 -mlx16-x8\""
+  OPT_BVL_INSTSET_OPT_MLX_GCC_2: "OPT_BUILD_VARS_LIST=\"OPT_INSTSET\" OPT_INSTSET=\"-mlx16-e8 -mlx16-ex -mlx16-8 -mlx16-x8 -mlx16-fx\""
+  OPT_BVL_INSTSET_OPT_MLX_GCC_3: "OPT_BUILD_VARS_LIST=\"OPT_INSTSET\" OPT_INSTSET=\"-mlx16-e8 -mlx16-ex -mlx16-8 -mlx16-x8 -mlx16-fx\""
+  OPT_BVL_LIN_API_VERSIONS: "OPT_BUILD_VARS_LIST=\"OPT_SL_API_VERSION OPT_MA_API_VERSION\""
+  OPT_BVL_LIN_SL_API_VERSIONS_BAUDRATES: "OPT_BUILD_VARS_LIST=\"OPT_SL_API_VERSION OPT_SL_LIN_BAUDRATE OPT_SL_LIN_AUTOBAUDRATE_MODE\""
+  OPT_BVL_LIN_MA_API_VERSIONS_BAUDRATES: "OPT_BUILD_VARS_LIST=\"OPT_MA_API_VERSION OPT_MA_LIN_BAUDRATE\""
+  OPT_BVL_SERVICES: "OPT_BUILD_VARS_LIST=\"OPT_SL_HAS_SAVE_CONFIGURATION_FUNCTIONS OPT_SL_HAS_EVENT_TRIGGERED_FRAMES OPT_SL_HAS_SAVE_CONFIGURATION_SERVICE OPT_SL_HAS_SERIAL_NUMBER_CALLOUT OPT_SL_HAS_CONDITIONAL_CHANGE_NAD_SERVICE OPT_SL_HAS_ASSIGN_NAD_SERVICE OPT_SL_HAS_ASSIGN_FRAME_ID_SERVICE OPT_SL_HAS_READ_BY_ID_CALLOUT OPT_SL_HAS_READ_BY_ID_SERVICE OPT_SL_HAS_UNKNOWN_DIAG_CALLOUT\""
+
+  MAKE_SILENT: "DEGUB=3"
+
+  COV_OPT_LIN_API_SL_ENV: "OPT_SL_LIN_AUTOBAUDRATE_MODE OPT_SL_HAS_SAVE_CONFIGURATION_FUNCTIONS OPT_SL_HAS_READ_BY_ID_CALLOUT OPT_SL_HAS_UNKNOWN_DIAG_CALLOUT OPT_SL_HAS_READ_BY_ID_SERVICE OPT_SL_HAS_EVENT_TRIGGERED_FRAMES OPT_SL_HAS_SAVE_CONFIGURATION_SERVICE OPT_SL_HAS_SERIAL_NUMBER_CALLOUT OPT_SL_HAS_CONDITIONAL_CHANGE_NAD_SERVICE OPT_SL_HAS_ASSIGN_NAD_SERVICE OPT_SL_HAS_ASSIGN_FRAME_ID_SERVICE OPT_SL_HAS_READ_BY_ID_CALLOUT"
+  COV_OPT_BVL_LIN_API_SL_ENV: "OPT_SL_LIN_AUTOBAUDRATE_MODE=1 OPT_SL_HAS_SAVE_CONFIGURATION_FUNCTIONS=1 OPT_SL_HAS_READ_BY_ID_CALLOUT=1 OPT_SL_HAS_UNKNOWN_DIAG_CALLOUT=1 OPT_SL_HAS_READ_BY_ID_SERVICE=1 OPT_SL_HAS_EVENT_TRIGGERED_FRAMES=1 OPT_SL_HAS_SAVE_CONFIGURATION_SERVICE=1 OPT_SL_HAS_SERIAL_NUMBER_CALLOUT=1 OPT_SL_HAS_CONDITIONAL_CHANGE_NAD_SERVICE=1 OPT_SL_HAS_ASSIGN_NAD_SERVICE=1 OPT_SL_HAS_ASSIGN_FRAME_ID_SERVICE=1 OPT_SL_HAS_READ_BY_ID_CALLOUT=1"
+
+  COV_OPT_LIN_API_MA_ENV: "OPT_MA_HAS_MASTER_REQ_COMMAND OPT_MA_HAS_SLAVE_RESP_COMMAND OPT_MA_HAS_ASSIGN_NAD_COMMAND OPT_MA_HAS_FREE_FORMAT_COMMAND OPT_MA_HAS_CONDITIONAL_CHANGE_NAD_COMMAND OPT_MA_HAS_DATA_DUMP_COMMAND OPT_MA_HAS_SAVE_CONFIGURATION_COMMAND OPT_MA_HAS_ASSIGN_FRAME_ID_RANGE_COMMAND OPT_MA_HAS_ASSIGN_FRAME_ID_COMMAND OPT_MA_HAS_UNASSIGN_FRAME_ID_COMMAND OPT_MA_HAS_EVENT_TRIGGERED_FRAME OPT_MA_HAS_SPORADIC_FRAME OPT_MA_HAS_ASSIGN_FRAME_ID_COMMAND OPT_MA_HAS_UNASSIGN_FRAME_ID_COMMAND"
+  COV_OPT_BVL_LIN_API_MA_ENV: "OPT_MA_HAS_MASTER_REQ_COMMAND=1 OPT_MA_HAS_SLAVE_RESP_COMMAND=1 OPT_MA_HAS_ASSIGN_NAD_COMMAND=1 OPT_MA_HAS_FREE_FORMAT_COMMAND=1 OPT_MA_HAS_CONDITIONAL_CHANGE_NAD_COMMAND=1 OPT_MA_HAS_DATA_DUMP_COMMAND=1 OPT_MA_HAS_SAVE_CONFIGURATION_COMMAND=1 OPT_MA_HAS_ASSIGN_FRAME_ID_RANGE_COMMAND=1 OPT_MA_HAS_ASSIGN_FRAME_ID_COMMAND=1 OPT_MA_HAS_UNASSIGN_FRAME_ID_COMMAND=1 OPT_MA_HAS_EVENT_TRIGGERED_FRAME=1 OPT_MA_HAS_SPORADIC_FRAME=1 OPT_MA_HAS_ASSIGN_FRAME_ID_COMMAND=1 OPT_MA_HAS_UNASSIGN_FRAME_ID_COMMAND=1"
+
+  COV_OPT_BVL_LIN_API_SL: "OPT_BUILD_VARS_LIST=\"OPT_SL_API_VERSION $COV_OPT_LIN_API_SL_ENV\" $OPT_SL_LIN_VERSION $COV_OPT_BVL_LIN_API_SL_ENV"
+  COV_OPT_BVL_LIN_API_MA: "OPT_BUILD_VARS_LIST=\"OPT_MA_API_VERSION $COV_OPT_LIN_API_MA_ENV\" $OPT_SL_LIN_VERSION $COV_OPT_BVL_LIN_API_MA_ENV"
+
+stages:
+  - build
+  - uncrustify
+  - coverity
+  - docs
+
+.template: &build_setup
+  stage: build
+  before_script:
+    - git clean -dffx
+    - make -f test/CompilationTest.mk clean
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - ssh-add <(echo "$SSH_PRIVATE_KEY")
+    - '[[ -f /.dockerenv ]] && mkdir -p ~/.ssh && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+  tags:
+    - docker
+    - colo
+
+.template: &build_setup_mlx_gcc1
+  <<: *build_setup
+  image: dsl.melexis.com:5001/bu-act/mlx16-gcc-1-12-5:2.0.3
+
+.template: &build_setup_mlx_gcc2
+  <<: *build_setup
+  image: dsl.melexis.com:5001/bu-act/mlx16-gcc-2-4-2:2.0.2
+
+.template: &build_setup_mlx_gcc3
+  <<: *build_setup
+  image: dsl.melexis.com:5001/bu-act/mlx16-gcc-3-0-39-cov:1.0.0
+
+build_lin_apis:
+  <<: *build_setup_mlx_gcc3
+  script:
+    - python3 test/CompilationTest.py $MAKE_SILENT
+
+build_instset_mlx_gcc1:
+  <<: *build_setup_mlx_gcc1
+  script:
+    - python3 test/CompilationTest.py $MAKE_SILENT $OPT_BVL_INSTSET_OPT_MLX_GCC_1
+
+build_instset_mlx_gcc2:
+  <<: *build_setup_mlx_gcc2
+  script:
+    - python3 test/CompilationTest.py $MAKE_SILENT $OPT_BVL_INSTSET_OPT_MLX_GCC_2
+
+build_instset_mlx_gcc3:
+  <<: *build_setup_mlx_gcc3
+  script:
+    - python3 test/CompilationTest.py $MAKE_SILENT $OPT_BVL_INSTSET_OPT_MLX_GCC_3
+
+build_lin_api_versions:
+  <<: *build_setup_mlx_gcc3
+  script:
+    - python3 test/CompilationTest.py $MAKE_SILENT $OPT_BVL_LIN_API_VERSIONS
+
+build_lin_sl_version_baudrate:
+  <<: *build_setup_mlx_gcc3
+  script:
+    - python3 test/CompilationTest.py $MAKE_SILENT $OPT_BVL_LIN_SL_API_VERSIONS_BAUDRATES
+
+build_lin_ma_version_baudrate:
+  <<: *build_setup_mlx_gcc3
+  script:
+    - python3 test/CompilationTest.py $MAKE_SILENT $OPT_BVL_LIN_MA_API_VERSIONS_BAUDRATES
+
+build_services:
+  <<: *build_setup_mlx_gcc3
+  when: manual
+  script:
+    - python3 test/CompilationTest.py $MAKE_SILENT $OPT_BVL_SERVICES
+
+uncrustify:
+  image: dsl.melexis.com:5001/bu-act/uncrustify:1.0.0
+  variables:
+    GIT_SUBMODULE_STRATEGY: normal
+  tags:
+    - docker
+    - colo
+
+  stage: uncrustify
+  script:
+    - make uncrustify-check
+
+doxygen:
+  image: dsl.melexis.com:5001/bu-act/rst-docs-x64:2.0.0
+  before_script:
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - ssh-add <(echo "$SSH_PRIVATE_KEY")
+    - '[[ -f /.dockerenv ]] && mkdir -p ~/.ssh && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+  variables:
+    GIT_SUBMODULE_STRATEGY: normal
+  tags:
+    - docker
+    - colo
+
+  stage: docs
+  script:
+    - make -f test/CompilationTest.mk doxy
+  artifacts:
+    paths:
+      - "template/docs_lin_api/*"
+    when: on_success
+    expire_in: 1 weeks
+
+.template: &static_analysis
+  stage: coverity
+  before_script:
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - ssh-add <(echo "$SSH_PRIVATE_KEY")
+    - '[[ -f /.dockerenv ]] && mkdir -p ~/.ssh && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+  tags:
+    - docker
+    - colo
+
+  image: dsl.melexis.com:5001/bu-act/mlx16-gcc-1-12-5-cov:2.2.0
+
+  script:
+    - cov-configure --config=tools/coverity/compiler/coverity_config.xml --compiler=mlx16-gcc --comptype=gcc
+    - cov-build --dir idir$STREAM/ --config=tools/coverity/compiler/coverity_config.xml python3 test/CompilationTest.py $COV_OPT_BVL_LIN_API
+    - cov-import-scm --dir idir$STREAM/ --scm git
+    - cov-analyze --dir idir$STREAM --aggressiveness-level low --all --security --enable-fnptr --concurrency --enable-callgraph-metrics --paths 10000 --strip-path $PWD --misra-config tools/coverity/config/MISRA/MISRA_c2012_7.config -co MISSING_LOCK:lock_inference_threshold:10 --export-summaries true
+    - cov-commit-defects --host coverity.melexis.com --dataport 9090 --stream $STREAM --dir idir$STREAM --scm git --user $COVERITY_USERNAME --password $COVERITY_PASSWORD
+
+static_analysis_slave_v13:
+  variables:
+    STREAM: "library_std-lin-api-sl-13"
+    OPT_SL_LIN_VERSION: "OPT_SL_LIN_VERSION=LIN_1_3"
+    COV_OPT_BVL_LIN_API: $COV_OPT_BVL_LIN_API_SL
+  <<: *static_analysis
+
+static_analysis_slave_v20:
+  variables:
+    STREAM: "library_std-lin-api-sl-20"
+    OPT_SL_LIN_VERSION: "OPT_SL_LIN_VERSION=LIN_2_0"
+    COV_OPT_BVL_LIN_API: $COV_OPT_BVL_LIN_API_SL
+  <<: *static_analysis
+
+static_analysis_slave_v21_22:
+  variables:
+    STREAM: "library_std-lin-api-sl-21-22"
+    OPT_SL_LIN_VERSION: "OPT_SL_LIN_VERSION=LIN_2_2"
+    COV_OPT_BVL_LIN_API: $COV_OPT_BVL_LIN_API_SL
+  <<: *static_analysis
+
+static_analysis_slave_vJ2602:
+  variables:
+    STREAM: "library_std-lin-api-sl-J2602"
+    OPT_SL_LIN_VERSION: "OPT_SL_LIN_VERSION=SAE_J2602_2012"
+    COV_OPT_BVL_LIN_API: $COV_OPT_BVL_LIN_API_SL
+  <<: *static_analysis
+
+static_analysis_slave_vISO:
+  variables:
+    STREAM: "library_std-lin-api-sl-ISO"
+    OPT_SL_LIN_VERSION: "OPT_SL_LIN_VERSION=ISO_17987_2016"
+    COV_OPT_BVL_LIN_API: $COV_OPT_BVL_LIN_API_SL
+  <<: *static_analysis
+
+static_analysis_master_v13:
+  variables:
+    STREAM: "library_std-lin-api-ma-13"
+    OPT_MA_LIN_VERSION: "OPT_MA_LIN_VERSION=LIN_1_3"
+    COV_OPT_BVL_LIN_API: $COV_OPT_BVL_LIN_API_MA
+  <<: *static_analysis
+
+static_analysis_master_v20:
+  variables:
+    STREAM: "library_std-lin-api-ma-20"
+    OPT_MA_LIN_VERSION: "OPT_MA_LIN_VERSION=LIN_2_0"
+    COV_OPT_BVL_LIN_API: $COV_OPT_BVL_LIN_API_MA
+  <<: *static_analysis
+
+static_analysis_master_v21_22:
+  variables:
+    STREAM: "library_std-lin-api-ma-21-22"
+    OPT_MA_LIN_VERSION: "OPT_MA_LIN_VERSION=LIN_2_2"
+    COV_OPT_BVL_LIN_API: $COV_OPT_BVL_LIN_API_MA
+  <<: *static_analysis
+
+static_analysis_master_vJ2602:
+  variables:
+    STREAM: "library_std-lin-api-ma-J2602"
+    OPT_SL_LIN_VERSION: "OPT_SL_LIN_VERSION=SAE_J2602_2012"
+    COV_OPT_BVL_LIN_API: $COV_OPT_BVL_LIN_API_MA
+  <<: *static_analysis
+
+static_analysis_master_vISO:
+  variables:
+    STREAM: "library_std-lin-api-ma-ISO"
+    OPT_SL_LIN_VERSION: "OPT_SL_LIN_VERSION=ISO_17987_2016"
+    COV_OPT_BVL_LIN_API: $COV_OPT_BVL_LIN_API_MA
+  <<: *static_analysis

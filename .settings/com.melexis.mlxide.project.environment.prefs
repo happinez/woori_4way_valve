@@ -1,0 +1,4 @@
+com.melexis.mlxide.preference.platform=com.melexis.mlxide.platform.mlx81330_32\:\:1.1.0.3
+com.melexis.mlxide.preference.profile=
+com.melexis.mlxide.preference.tool=com.melexis.mlxide.mlxtc.gcc\:\:3.1.115.11
+eclipse.preferences.version=1

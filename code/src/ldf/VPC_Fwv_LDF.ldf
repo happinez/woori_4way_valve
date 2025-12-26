@@ -147,7 +147,7 @@ Schedule_tables {
  VPC_Multi_Valve {
     VPC_Fwv_Ctrl delay 100 ms ;
     VPC_Fwv_Resp delay 100 ms ;
-    Debug_Frame delay 10 ms ;
+    Debug_Frame delay 100 ms ;
   }
 }
 
@@ -171,13 +171,13 @@ Signal_encoding_types {
   d_debug_2_Encoding {
     physical_value, 0, 255, 1, 0 ;
   }
-  d_debug_3_Encoding {
-    physical_value, 0, 255, 1, 0 ;
-  }
   d_motor_status_Encoding {
     physical_value, 0, 255, 1, 0 ;
   }
   d_valve_status_Encoding {
+    physical_value, 0, 255, 1, 0 ;
+  }
+  d_debug_3_Encoding {
     physical_value, 0, 255, 1, 0 ;
   }
 }

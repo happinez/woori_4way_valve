@@ -183,23 +183,28 @@ static uint16_t Mot_dirChange_check(void)
 static void MotorStallDiag(void) /*100usec */
 {
 	uint16_t current = get_valve_motCurrent();
-	
+
 	if (motor.stall.maskTimer >= STALL_DETECT_TIMEOUT) /*100msec*/
 	{
-		if ((current >= motor.stall.halfThd) && (sensor.delta < sensor.thd) && (sensor.delta > 3))
+		if (((current >= motor.stall.halfThd) && (current < motor.stall.threshold)) && (sensor.delta < sensor.thd) && (sensor.delta > 3))
 		{
-
 			motor.stall.obstrCnt += 1;
 		}
 		else
 		{
-
 			if (motor.stall.obstrCnt > 0)
+			{
 				motor.stall.obstrCnt -= 1;
+			}
+			else
+			{
+				clear_fail_safe_retry_cnt(MOT_ABSTALL_ERROR);
+			}
 		}
-		if (motor.stall.obstrCnt >= 3000u)
+
+		if (motor.stall.obstrCnt >= 500u)	//50ms
 		{
-			if ((motor.stall.enable) && (get_valve_mode() != VALVE_CALIBRATION))
+			if (get_valve_mode() != VALVE_CALIBRATION)
 			{
 				motor.stall.flag |= STALL_MASK_TEMPORARY;
 
@@ -222,14 +227,11 @@ static void MotorStallDiag(void) /*100usec */
 		}
 		if (motor.stall.stallCnt >= 5000u)
 		{
-			if (motor.stall.enable)
-			{
-				motor.stall.flag |= STALL_MASK_PERMENT;
-
-				u16EventState = MOT_STALL_FAULT;
-				u16EventValue = (uint16_t)(current >> 3);
-				u16EventValue |= (uint16_t)((motor.elapsedTime >> 8) << 8);
-			}
+			motor.stall.flag |= STALL_MASK_PERMENT;
+			motor.stall.stallCnt = 0;
+			u16EventState = MOT_STALL_FAULT;
+			u16EventValue = (uint16_t)(current >> 3);
+			u16EventValue |= (uint16_t)((motor.elapsedTime >> 8) << 8);
 		}
 	}
 	else
@@ -328,6 +330,7 @@ static void MotorFaultDiag(void)
 				}
 				else
 				{
+					clear_fail_safe_retry_cnt(MOT_OC_ERROR);
 					setFaultDetect(FAULT_OC, CLEAR, CLEAR);
 				}
 			}
@@ -355,6 +358,10 @@ static void MotorFaultDiag(void)
 		}
 		else
 		{
+			if(current <= OVER_CURRNET_DETECT_CURRENT)	
+			{
+				motor.fault.flag &= ~FAULT_MASK_OVER_CURRENT;
+			}
 			setFaultDetect(FAULT_OC, CLEAR, CLEAR);
 		}
 	}
@@ -707,10 +714,12 @@ void app_mot_init(void)
 	motor.softStop.enable = 1u;
 	motor.softStop.completed = 0;
 	motor.softStop.inThreshold = (4 * C_GMR_ANGLE_SCALE_FACTOR);
+#if SOFTSTART_TEST_ENABLE
+	motor.softStop.dccDuty = (C_MOT_MAXDUTY_SET * 0.0016f);
+#else
 	motor.softStop.dccDuty = (C_MOT_MAXDUTY_SET * 0.01f);
-
+#endif
 	motor.stall.flag = 0;
-	motor.stall.enable = 1;
 	motor.stall.maskTimer = 0;
 	motor.stall.threshold = 800; /* 1000mA -> 800mA */
 

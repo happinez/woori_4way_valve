@@ -96,6 +96,12 @@ struct
 		} vs;
 		struct
 		{
+			tLinComm state;
+			uint16_t linErrRetryCnt;
+			uint16_t linErrTimer;
+		} comm;
+		struct
+		{
 			tTemperCondition state;
 			uint16_t retryCnt;
 			int16_t deg;
@@ -110,17 +116,15 @@ struct
 		struct
 		{
 			uint8_t state;
-			uint8_t retryCnt;
+			uint16_t retryCnt;
 			int16_t degree;
 			uint16_t count;
 		} gmr;
 		uint16_t motorCurrent;
 		uint8_t linError;
-		uint8_t linErrRetryCnt;
 		uint8_t McuFault;
-		uint8_t mcuRetryCnt;
+		uint16_t mcuRetryCnt;
 		uint8_t ObstructionRetryCnt;
-		tProtectCondition protType;
 		uint8_t calFault;
 		uint8_t motorFault;
 		uint8_t stallFault;
@@ -132,26 +136,64 @@ struct
 	} diag;
 } valve;
 
-static void ValveErrorReset(void)
+/**
+ * @brief Clears the fail-safe retry counter for a specific protection condition event.
+ *
+ * @param event_state The protection condition event (tProtectCondition) for which the counter should be cleared.
+ */
+void clear_fail_safe_retry_cnt(tProtectCondition event_state)
 {
-	if (valve.state == VALVE_PROTECTION)
+	switch(event_state)
 	{
+		/* --- Protection state Errors --- */
+		case VS_LOW_ERROR :
+			valve.diag.vs.UVretryCnt = CLEAR;	// Clear Under Voltage retry count
+			break;
+		case VS_HIGH_ERROR : 
+			valve.diag.vs.OVretryCnt = CLEAR;	// Clear Over Voltage retry count
+			break;
+		case MOT_OC_ERROR : 
+			valve.diag.motOcRetryCnt = CLEAR;	// Clear Motor Over Current retry count
+			break;
+		case MOT_ABSTALL_ERROR : 
+			valve.diag.ObstructionRetryCnt = CLEAR;	// Clear Motor  Obstruction stall retry count
+			break;
+		case SENSOR_POS_ERROR : 
+			valve.pos.retryCnt = CLEAR;	// Clear Valve Position Sensor retry count (Angle deviation/Out of tolerance)
+			break;
+		case SENSOR_OUT_ERROR : 
+			valve.diag.gmr.retryCnt = CLEAR;	// Clear GMR Sensor Out-of-range retry count (No valid signal/Value not received)
+			break;
+		case MCU_ERROR : 
+			valve.diag.mcuRetryCnt = CLEAR;	// Clear Microcontroller internal error retry count
+			break;
+		case VALVE_LIN_COMM_FAULT : 
+			valve.diag.comm.linErrRetryCnt = CLEAR;	// Clear LIN Communication Error retry count
+			break;
 
-		valve.diag.motOcRetryCnt = 0;
-		valve.diag.ObstructionRetryCnt = 0;
-		valve.pos.retryCnt = 0;
-		valve.diag.gmr.retryCnt = 0;
-		valve.diag.mcuRetryCnt = 0;
-		valve.diag.vs.UVretryCnt = 0;
-		valve.diag.vs.OVretryCnt = 0;
-		valve.diag.temp.retryCnt = 0;
-	}
-	if (valve.state == VALVE_FAULT)
-	{
+		/* --- Fault state Errors --- */
+		case VALVE_CAL_FAULT : 
+			valve.diag.calRetryCnt = CLEAR;	// Clear Valve Calibration failure retry count
+			break;
+		case MOT_STALL_FAULT : 
+			valve.diag.stallRetryCnt = CLEAR;	// Clear Motor Stall Fault retry count
+			break;
+		case MOT_SHORT_FAULT : 
+			valve.diag.motShortRetryCnt = CLEAR;	// Clear Motor Short Circuit Fault retry count
+			break;
+		case MOT_OPEN_FAULT : 
+			valve.diag.motOpenRetryCnt  = CLEAR;	// Clear Motor Open Circuit Fault retry count
+			break;
+
+		default:
+			break;
 	}
 }
+
 static void ValveFaultReset(void)
 {
+	uint8_t i = 0;
+
 	u16EventState = NONE_ERROR;
 	valve.comm.faultMode = 0;
 	MotClearFaultFlag(0);
@@ -160,14 +202,10 @@ static void ValveFaultReset(void)
 	valve.diag.gmr.state = 0;
 	valve.diag.McuFault = 0;
 
-	valve.diag.motOcRetryCnt = 0;
-	valve.diag.ObstructionRetryCnt = 0;
-	valve.pos.retryCnt = 0;
-	valve.diag.gmr.retryCnt = 0;
-	valve.diag.mcuRetryCnt = 0;
-	valve.diag.vs.UVretryCnt = 0;
-	valve.diag.vs.OVretryCnt = 0;
-	valve.diag.temp.retryCnt = 0;
+	for(i=1; i<14; i++)
+	{
+		clear_fail_safe_retry_cnt(i);
+	}
 }
 
 static tValveState ValveInitTask(void)
@@ -309,9 +347,7 @@ static tValveState ValveOperationTask(void)
 
 	if (valve.elapsedTime >= valve.comm.timeOut)
 	{
-
-		valve.pos.fault = 1;
-		nextState = VALVE_PROTECTION;
+		valve.pos.fault = POS_FAULT;
 	}
 	else
 	{
@@ -365,15 +401,16 @@ static tValveState ValveOperationTask(void)
 			}
 			else
 			{
-				valve.pos.fault = 1;
+				valve.pos.fault = POS_FAULT;
 			}
 #endif
-			if (valve.pos.fault != 0)
+			if (valve.pos.fault != POS_NORMAL)
 			{
 				nextState = VALVE_PROTECTION;
 			}
 			else
 			{
+				clear_fail_safe_retry_cnt(SENSOR_POS_ERROR);
 				nextState = VALVE_STANDBY;
 			}
 		}
@@ -435,7 +472,7 @@ static tValveState ValveCalibrationTask(void)
 	switch (valve.calibration.state)
 	{
 	case CALSTEP_RESET:
-		MotClearStallFlag(0); /* clear stall flag if set */
+		MotClearStallFlag(2); /* clear stall flag if set */
 		MotRequestHardStop();
 		valve.calibration.state = CALSTEP_START;
 		break;
@@ -469,7 +506,6 @@ static tValveState ValveCalibrationTask(void)
 		valve.calibration.timer += 1;
 		if (valve.calibration.timer >= timeOut)
 		{
-
 			valve.calibration.state = CALSTEP_FAULT;
 		}
 		else if (valve.calibration.delay > 0)
@@ -478,10 +514,9 @@ static tValveState ValveCalibrationTask(void)
 		}
 		else
 		{
-
 			if (valve.motorMotion == MOTION_STALL)
 			{
-				MotClearStallFlag(0); /* clear stall flag if set */
+				MotClearStallFlag(2); /* clear stall flag if set */
 				MotRequestHardStop();
 				if (valve.calibration.offsetDone == 0)
 				{
@@ -524,7 +559,7 @@ static tValveState ValveCalibrationTask(void)
 		{
 			if (valve.motorMotion == MOTION_STALL)
 			{
-				MotClearStallFlag(0);																	/* clear stall flag if set */
+				MotClearStallFlag(2);																	/* clear stall flag if set */
 				valve.calibration.d360Angle = (valve.pos.currentAngle - (int16_t)C_STOPPER_360D_ANGLE); // C_STOPPER_360D_ANGLE
 				if (valve.calibration.d360Angle < 0)
 				{
@@ -573,6 +608,7 @@ static tValveState ValveCalibrationTask(void)
 			{
 			}
 #if 1
+
 			valve.pos.modeAngle[C_MODE_B] = valve.calibration.d0Angle;
 #endif
 			if (valve.calibration.req2Cal != 0)
@@ -599,7 +635,7 @@ static tValveState ValveCalibrationTask(void)
 			if (valve.motorMotion == MOTION_STALL)
 			{
 
-				MotClearStallFlag(0); /* clear stall flag if set */
+				MotClearStallFlag(2); /* clear stall flag if set */
 				MotRequestHardStop();
 
 				valve.calibration.state = CALSTEP_FAULT;
@@ -661,7 +697,7 @@ static tValveState ValveFaultTask(void)
 		}
 	}
 
-	if (valve.elapsedTime >= 5000u)
+	if (valve.elapsedTime >= 1000u)
 	{
 		if (valve.diag.calRetryCnt < 3)
 		{
@@ -669,7 +705,7 @@ static tValveState ValveFaultTask(void)
 		}
 		if (valve.diag.stallRetryCnt < 3)
 		{
-			MotClearStallFlag(0);
+			MotClearStallFlag(2);
 		}
 		if (valve.diag.motOpenRetryCnt < 3)
 		{
@@ -684,257 +720,470 @@ static tValveState ValveFaultTask(void)
 		{
 			status = 0;
 		}
-		if (MotGetStallState() != 0)
-		{
-			status = 0;
-		}
+
 		if (MotGetFaultState() != 0)
 		{
 			status = 0;
 		}
+	}
 
-		if (status != 0)
+		if (MotGetStallState() != 0)
 		{
-			//			nextState=valve.lastState;
-			nextState = VALVE_STANDBY;
+			status = 0;
 		}
-		else
-		{
-			valve.comm.faultMode = 1;
-		}
+
+	// This section ensures the system remains in a fault state (status = 0) 
+	// if any of the following critical diagnostic conditions persist.
+	// These checks originate from conditions previously handled by the protection logic.
+
+	/**
+	 * @brief Checks and maintains the fault state based on current diagnostic conditions.
+	 */
+
+	if ((valve.diag.motorFault & FAULT_MASK_OVER_CURRENT) != 0)	// Check if critical motor fault (e.g., Over Current) is active
+	{
+		status = 0; 
+	}
+	if (valve.diag.comm.state != COMMUNICATION_NORNAL)	// Check if communication is currently abnormal
+	{
+		status = 0;
+	}
+	if (valve.diag.vs.state != VS_NORMAL)	// Check if Voltage Supply (VS) state is abnormal
+	{
+		status = 0;
+	}
+	if (valve.diag.McuFault != MCU_NORMAL)	// Check if the MCU has an active fault
+	{
+		status = 0;
+	}
+	if (valve.diag.gmr.state != GMR_SENSOR_NORMAL)	// Check if GMR sensor state is abnormal
+	{
+		status = 0;
+	}
+	if ((valve.diag.stallFault & STALL_MASK_TEMPORARY) != 0)	// Check if a temporary stall fault is active
+	{
+		status = 0;
+	}
+	if (valve.pos.fault != POS_NORMAL)	// Check if a position error/fault is active
+	{
+		status = 0;
+	}
+
+	if (status != 0)
+	{
+		//			nextState=valve.lastState;
+		nextState = VALVE_STANDBY;
+	}
+	else
+	{
+		valve.comm.faultMode = 1;
 	}
 
 	return nextState;
 }
 
-static tValveState ValveProtectionTask(void)
+/**
+ * @brief Logs the Under Voltage (UV) event and safely increments the UV fault retry counter if UV is active.
+ * @param void No input parameters are used for this function.
+ * @retval void This function does not return a value.
+ */
+void check_retry_cnt_protection_uv(void)
 {
-	tValveState nextState = VALVE_PROTECTION;
-	uint16_t status = 1;
+	if (valve.diag.vs.state == VS_UNDERVOLTAGE)
+	{
+		event_memry_save(VS_LOW_ERROR, valve.diag.vs.state);
 
-	MotRequestHardStop();
-	valve.comm.lastMode = 0xff;
+		if (valve.diag.vs.UVretryCnt < MAX_VALUE_2BYTE)
+		{
+			valve.diag.vs.UVretryCnt++;
+		}
+	}
+}
+
+/**
+ * @brief Logs the Over Voltage (OV) event and safely increments the OV fault retry counter if OV is active.
+ * @param void No input parameters are used for this function.
+ * @retval void This function does not return a value.
+ */
+void check_retry_cnt_protection_ov(void)
+{
+	if (valve.diag.vs.state == VS_OVERVOLTAGE)
+	{
+		event_memry_save(VS_HIGH_ERROR, valve.diag.vs.state);
+
+		if (valve.diag.vs.OVretryCnt < MAX_VALUE_2BYTE)
+		{
+			valve.diag.vs.OVretryCnt++;
+		}
+	}
+}
+
+/**
+ * @brief Handles Under Voltage (UV) and Over Voltage (OV) protection; transitions to VALVE_FAULT if either fault persists (600ms).
+ * @param result_data Current protection check status containing status and next state suggestion.
+ * @retval Protectoin_Check_Result Updated result data after checking voltage supply fault status.
+ */
+Protectoin_Check_Result check_protection_uv_ov(Protectoin_Check_Result result_data)
+{
+	if (valve.diag.vs.state != VS_NORMAL)
+	{
+		result_data.status = 0;
+
+		check_retry_cnt_protection_uv();
+		check_retry_cnt_protection_ov();
+		
+		if (valve.diag.vs.UVretryCnt >= CHECK_UNDER_VOLTAGE_CNT)
+		{
+			clear_fail_safe_retry_cnt(VS_LOW_ERROR);
+			result_data.next_state = VALVE_FAULT;
+		}
+
+		if (valve.diag.vs.OVretryCnt > CHECK_OVER_VOLTAGE_CNT)
+		{
+			clear_fail_safe_retry_cnt(VS_HIGH_ERROR);
+			result_data.next_state = VALVE_FAULT;
+		}
+	}
+
+	return result_data;
+}
+
+/**
+ * @brief Checks the valve's temperature state and fails the protection check if the temperature is abnormal.
+ * @param result_data Current protection check status containing status and next state suggestion.
+ * @retval Protectoin_Check_Result Updated result data after checking temperature status.
+ */
+Protectoin_Check_Result check_protection_temp(Protectoin_Check_Result result_data)
+{
+	if (valve.diag.temp.state != TEMPERATURE_NORMAL)
+	{
+		result_data.status = 0;
+	}
+
+	return result_data;
+}
+
+/**
+ * @brief Safely increments the communication fault retry counter (linErrRetryCnt).
+ * @param void No input parameters are used for this function.
+ * @retval void This function does not return a value.
+ */
+void check_retry_cnt_protection_comm(void)
+{
+	if (valve.diag.comm.linErrRetryCnt < MAX_VALUE_2BYTE)
+	{
+		valve.diag.comm.linErrRetryCnt++;
+	}
+}
+
+/**
+ * @brief Handles communication fault protection; logs the error and transitions to VALVE_FAULT if the fault persists past the retry time (1 sec).
+ * @param result_data Current protection check status containing status and next state suggestion.
+ * @retval Protectoin_Check_Result Updated result data after checking communication fault status.
+ */
+Protectoin_Check_Result check_protection_comm(Protectoin_Check_Result result_data)
+{
+	if (valve.diag.comm.state != COMMUNICATION_NORNAL)
+	{
+		result_data.status = 0;
+		event_memry_save(VALVE_LIN_COMM_FAULT, valve.diag.comm.state);
+
+		check_retry_cnt_protection_comm();
+
+		if (valve.diag.comm.linErrRetryCnt >= CHECK_LIN_COMM_ERR_CNT)
+		{
+			clear_fail_safe_retry_cnt(VALVE_LIN_COMM_FAULT);
+			result_data.next_state = VALVE_FAULT;
+		}
+	}
+
+	return result_data;
+}
+
+/**
+ * @brief Processes initial over-current (OC) fault detection, manages error type resets, and increments the OC fault retry counter.
+ * @param void No input parameters are used for this function.
+ * @retval void This function does not return a value.
+ * @note Increments counter when entering protection mode (valve.initStatus != 0)
+ */
+void check_retry_cnt_protection_oc(void)
+{
+	if (valve.initStatus != 0)
+	{	
+		valve.initStatus = 0;
+
+		if (valve.diag.motOcRetryCnt < MAX_VALUE_1BYTE)
+		{
+			valve.diag.motOcRetryCnt++;
+		}
+	}
+}
+
+/**
+ * @brief Handles motor over-current (OC) protection; logs the error, attempts recovery, or transitions to VALVE_FAULT if the retry count (10 times) is exceeded.
+ * @param result_data Current protection check status containing status and next state suggestion.
+ * @retval Protectoin_Check_Result Updated result data after checking OC fault status.
+ * @note When entering protection mode, motOcRetryCnt is incremented. If motOcRetryCnt >= CHECK_OVER_CURRENT_CNT (10), transitions to VALVE_FAULT.
+ */
+Protectoin_Check_Result check_protection_oc(Protectoin_Check_Result result_data)
+{	
+	if ((valve.diag.motorFault & FAULT_MASK_OVER_CURRENT) != 0)
+	{
+		result_data.status  = 0;
+		event_memry_save(MOT_OC_ERROR, valve.diag.motorFault);
+		
+		check_retry_cnt_protection_oc();
+
+		if(valve.diag.motOcRetryCnt < CHECK_OVER_CURRENT_CNT)
+		{
+			if (valve.elapsedTime >= TIME_500MS)
+			{
+				MotClearFaultFlag(3);
+			}
+		}
+		else
+		{
+			clear_fail_safe_retry_cnt(MOT_OC_ERROR);
+			result_data.next_state = VALVE_FAULT;
+		}
+	}
+
+	return result_data;
+}
+
+/**
+ * @brief Processes initial position sensor fault detection, manages error type resets, and increments the fault retry counter.
+ * @param void No input parameters are used for this function.
+ * @retval void This function does not return a value.
+ */
+void check_retry_cnt_protection_pos_fault(void)
+{
+	if (valve.initStatus != 0)
+	{
+		valve.initStatus = 0;
+		
+		if (valve.pos.retryCnt < MAX_VALUE_1BYTE)
+		{
+			valve.pos.retryCnt++;
+		}
+	}
+}
+
+/**
+ * @brief Handles position sensor fault protection; logs the error, attempts recovery, or transitions to VALVE_FAULT after retry count(5 times) is exceeded.
+ * @param result_data Current protection check status containing status and next state suggestion.
+ * @retval Protectoin_Check_Result Updated result data after checking position fault status.
+ */
+Protectoin_Check_Result check_protection_pos_fault(Protectoin_Check_Result result_data)
+{
+	if (valve.pos.fault != POS_NORMAL)
+	{
+		result_data.status = 0;
+		event_memry_save(SENSOR_POS_ERROR, valve.pos.currentAngle);
+		
+		check_retry_cnt_protection_pos_fault();
+
+		if(valve.pos.retryCnt < CHECK_POSITION_SENSOR_CNT)
+		{
+			if (valve.elapsedTime >= TIME_500MS)
+			{
+				valve.pos.fault = POS_NORMAL;
+			}
+		}
+		else
+		{
+			clear_fail_safe_retry_cnt(SENSOR_POS_ERROR);
+			result_data.next_state = VALVE_FAULT;
+		}
+	}
+
+	return result_data;
+}
+
+/**
+ * @brief Logs the MCU fault event and safely increments the MCU fault retry counter.
+ * @param void No input parameters are used for this function.
+ * @retval void This function does not return a value.
+ */
+void check_retry_cnt_protection_mcu_fault(void)
+{
+	event_memry_save(MCU_ERROR, valve.diag.McuFault);
+
+	if (valve.diag.mcuRetryCnt < MAX_VALUE_2BYTE)
+	{
+		valve.diag.mcuRetryCnt++;
+	}
+}
+
+/**
+ * @brief Handles MCU fault protection; transitions to VALVE_FAULT if the fault time exceeds the defined limit.
+ * @param result_data Current protection check status containing status and next state suggestion.
+ * @retval Protectoin_Check_Result Updated result data after checking MCU fault status.
+ */
+Protectoin_Check_Result check_protection_mcu_fault(Protectoin_Check_Result result_data)
+{
+	if (valve.diag.McuFault != MCU_NORMAL)
+	{
+		result_data.status = 0;
+		check_retry_cnt_protection_mcu_fault();
+
+		if (valve.diag.mcuRetryCnt >= MCU_FAULT_RERTY_TIME)
+		{
+			clear_fail_safe_retry_cnt(MCU_ERROR);
+			result_data.next_state = VALVE_FAULT;
+		}
+	}
+
+	return result_data;
+}
+
+/**
+ * @brief Processes initial obstruction fault detection, manages error type resets, and increments the retry counter.
+ * @param void No input parameters are used for this function.
+ * @retval void This function does not return a value.
+ */
+void check_retry_cnt_protection_obstruction_stall(void)
+{
 	if (valve.initStatus != 0)
 	{
 		valve.initStatus = 0;
 
-		if (valve.diag.vs.state == VS_UNDERVOLTAGE)
+		if (valve.diag.ObstructionRetryCnt < 0xffu)
 		{
-			if (valve.diag.protType != VS_LOW_ERROR)
-			{
-				ValveErrorReset();
-			}
-			if (valve.diag.vs.UVretryCnt < 0xffffu)
-			{
-				valve.diag.vs.UVretryCnt += 1;
-			}
-			valve.diag.protType = VS_LOW_ERROR;
-			u16EventState = VS_LOW_ERROR;
-			u16EventValue = valve.diag.vs.state;
+			valve.diag.ObstructionRetryCnt ++;
 		}
-		if (valve.diag.vs.state == VS_OVERVOLTAGE)
-		{
-			if (valve.diag.protType != VS_HIGH_ERROR)
-			{
-				ValveErrorReset();
-			}
-			if (valve.diag.vs.OVretryCnt < 0xffffu)
-			{
-				valve.diag.vs.OVretryCnt += 1;
-			}
-			valve.diag.protType = VS_HIGH_ERROR;
-			u16EventState = VS_HIGH_ERROR;
-			u16EventValue = valve.diag.vs.state;
-		}
-		if (valve.diag.temp.state != TEMPERATURE_NORMAL)
-		{
-			if (valve.diag.protType != TEMP_HIGH_ERROR)
-			{
-				ValveErrorReset();
-			}
-			if (valve.diag.temp.retryCnt < 0xffu)
-			{
-				valve.diag.temp.retryCnt += 1;
-			}
-			valve.diag.protType = TEMP_HIGH_ERROR;
-			u16EventState = TEMP_HIGH_ERROR;
-			u16EventValue = valve.diag.temp.deg;
-		}
-		if ((valve.diag.motorFault & FAULT_MASK_OVER_CURRENT) != 0)
-		{
-			if (valve.diag.protType != MOT_OC_ERROR)
-			{
-				ValveErrorReset();
-			}
-			if (valve.diag.motOcRetryCnt < 0xffu)
-			{
-				valve.diag.motOcRetryCnt += 1;
-			}
-			valve.diag.protType = MOT_OC_ERROR;
-		}
-		if ((valve.diag.stallFault & STALL_MASK_TEMPORARY) != 0)
-		{
-			if (valve.diag.protType != MOT_ABSTALL_ERROR)
-			{
-				ValveErrorReset();
-			}
-			if (valve.diag.ObstructionRetryCnt < 0xffu)
-			{
-				valve.diag.ObstructionRetryCnt += 1;
-			}
-			valve.diag.protType = MOT_ABSTALL_ERROR;
-		}
-		if (valve.pos.fault != 0)
-		{
-			if (valve.diag.protType != SENSOR_POS_ERROR)
-			{
-				ValveErrorReset();
-			}
-			if (valve.pos.retryCnt < 0xffu)
-			{
-				valve.pos.retryCnt += 1;
-			}
-			valve.diag.protType = SENSOR_POS_ERROR;
-			u16EventState = SENSOR_POS_ERROR;
-			u16EventValue = valve.pos.currentAngle;
-		}
-		if (valve.diag.gmr.state != 0)
-		{
-			if (valve.diag.protType != SENSOR_OUT_ERROR)
-			{
-				ValveErrorReset();
-			}
-			if (valve.diag.gmr.retryCnt < 0xffu)
-			{
-				valve.diag.gmr.retryCnt += 1;
-			}
-			valve.diag.protType = SENSOR_OUT_ERROR;
-			u16EventState = SENSOR_OUT_ERROR;
-			u16EventValue = valve.pos.currentAngle;
-		}
+	}
+}
 
-		if (valve.diag.McuFault != 0)
-		{
-			if (valve.diag.protType != MCU_ERROR)
-			{
-				ValveErrorReset();
-			}
-			if (valve.diag.mcuRetryCnt < 0xffu)
-			{
-				valve.diag.mcuRetryCnt += 1;
-			}
-			valve.diag.protType = MCU_ERROR;
-			u16EventState = MCU_ERROR;
-			u16EventValue = valve.diag.vs.state;
-		}
-	}
-
-	if (valve.elapsedTime >= 3000u)
-	{
-		if (valve.diag.ObstructionRetryCnt < 10)
-		{
-			MotClearStallFlag(1);
-		}
-		else
-		{
-			valve.comm.faultMode = 1;
-		}
-
-		if (valve.diag.motOcRetryCnt < CHECK_OVER_CURRENT_CNT)
-		{
-			MotClearFaultFlag(3);
-		}
-		else
-		{
-			valve.comm.faultMode = 1;
-		}
-
-		if (valve.pos.retryCnt < CHECK_POSITION_SENSOR_CNT)
-		{
-			valve.pos.fault = 0;
-		}
-		else
-		{
-			valve.comm.faultMode = 1;
-		}
-		
-		if (valve.diag.gmr.retryCnt < 10)
-		{
-			valve.diag.gmr.state = 0;
-		}
-		else
-		{
-			valve.comm.faultMode = 1;
-		}
-	}
-
-	if (valve.diag.vs.state == VS_NORMAL)
-	{
-		status = 0;
-	}
-	else
-	{
-		if (valve.diag.vs.UVretryCnt > CHECK_UNDER_VOLTAGE_CNT)
-		{
-			status = 0;
-			valve.comm.faultMode = 1;
-		}
-		if (valve.diag.vs.OVretryCnt > CHECK_OVER_VOLTAGE_CNT)
-		{
-			status = 0;
-			valve.comm.faultMode = 1;
-		}
-	}
-
-	if (valve.diag.temp.state == TEMPERATURE_NORMAL)
-	{
-		status = 0;
-	}
-	else
-	{
-		if (valve.diag.temp.retryCnt >= CHECK_HIGH_TEMP_CNT)
-		{
-			status = 0;
-			valve.comm.faultMode = 1;
-		}
-	}
-	if (valve.diag.McuFault != 0)
-	{
-		status = 0;
-	}
-	else
-	{
-		if (valve.diag.mcuRetryCnt >= 10)
-		{
-			status = 0;
-			valve.comm.faultMode = 1;
-		}
-	}
+/**
+ * @brief Handles temporary stall/obstruction protection; attempts recovery or transitions to VALVE_FAULT after 3 retries.
+ * @param result_data Current protection check status.
+ * @retval Protectoin_Check_Result Updated result data.
+ */
+Protectoin_Check_Result check_protection_obstruction_stall(Protectoin_Check_Result result_data)
+{
 	if ((valve.diag.stallFault & STALL_MASK_TEMPORARY) != 0)
 	{
-		status = 0;
-	}
-	if ((valve.diag.motorFault & FAULT_MASK_OVER_CURRENT) != 0)
-	{
-		status = 0;
+		result_data.status = 0;
+		check_retry_cnt_protection_obstruction_stall();
+
+		if (valve.diag.ObstructionRetryCnt < OBSTRUCTION_STALL_RETRY_CNT)
+		{
+			if (valve.elapsedTime >= TIME_500MS)
+			{
+				MotClearStallFlag(1);
+			}
+		}
+		else
+		{
+			clear_fail_safe_retry_cnt(MOT_ABSTALL_ERROR);
+			result_data.next_state = VALVE_FAULT;
+		}
 	}
 
-	if ((valve.diag.gmr.state != 0) || (valve.pos.fault != 0))
-	{
-		status = 0;
-	}
-	if (valve.linLiveTimeOut == 0)
-	{
-		status = 0;
-	}
-	if ((status != 0) && (valve.comm.faultMode == 0))
-	{
-		//		nextState=valve.lastState;
-		nextState = VALVE_STANDBY;
-	}
-
-	return nextState;
+	return result_data;
 }
+
+/**
+ * @brief Increments the retry counter for persistent GMR sensor faults.
+ *
+ * This function handles the initial event detection and logging when a GMR sensor fault 
+ * occurs during initialization or operation, setting up for protection/fault state transition.
+ */
+void check_retry_cnt_protection_gmr_fault(void)
+{
+	if (valve.initStatus != 0)
+	{
+		valve.initStatus = 0;
+		event_memry_save(SENSOR_OUT_ERROR, valve.pos.currentAngle);
+
+		if (valve.diag.gmr.retryCnt < MAX_VALUE_1BYTE)
+		{
+			valve.diag.gmr.retryCnt++;
+		}
+	}
+}
+
+/**
+ * @brief Handles protection logic for GMR sensor faults, including retry mechanism and transition to VALVE_FAULT.
+ * @param result_data Current protection check status.
+ * @retval Protectoin_Check_Result Updated result data.
+ */
+Protectoin_Check_Result check_protection_gmr_fault(Protectoin_Check_Result result_data)
+{
+	if (valve.diag.gmr.state != GMR_SENSOR_NORMAL)
+	{
+		result_data.status = 0;
+
+		check_retry_cnt_protection_gmr_fault();
+
+		if (valve.diag.gmr.retryCnt < GMR_FAULT_RETRY_CNT)
+		{
+			if (valve.elapsedTime >= TIME_1S)
+			{
+				valve.diag.gmr.state = GMR_SENSOR_NORMAL;
+			}
+		}
+		else
+		{
+			clear_fail_safe_retry_cnt(SENSOR_OUT_ERROR);
+			result_data.next_state = VALVE_FAULT;
+		}
+	}
+	
+	return result_data;
+}
+
+void event_memry_save(tProtectCondition event_state, uint16_t event_value)
+{
+	u16EventState = event_state;
+	u16EventValue = event_value;
+}
+
+/**
+ * @brief Executes the sequential safety and protection checks for the valve system.
+ *
+ * This function sequentially checks all critical fault and error conditions (UV/OV, temperature, communication, etc.)
+ * in the valve system. If all protection checks pass successfully, the system transitions to the next safe state (VALVE_STANDBY).
+ *
+ * @note This task typically runs periodically within the Valve State Machine's Protection State.
+ *
+ * @retval tValveState Returns the next state to transition to (e.g., VALVE_STANDBY if all checks pass).
+ */
+static tValveState ValveProtectionTask(void)
+{
+	Protectoin_Check_Result final_result;
+
+	final_result.next_state = VALVE_PROTECTION;
+	final_result.status = 1;
+
+	MotRequestHardStop();
+	valve.comm.lastMode = 0xff;
+
+	final_result = check_protection_uv_ov(final_result);	// Verification Complete
+
+	final_result = check_protection_temp(final_result);		// Verification Complete
+
+	final_result = check_protection_comm(final_result);		// Verification Complete
+
+	final_result = check_protection_oc(final_result);		// Verification Complete
+
+	final_result = check_protection_mcu_fault(final_result);	// Verification Complete
+	
+	final_result = check_protection_obstruction_stall(final_result);	// Verification Complete
+
+	final_result = check_protection_gmr_fault(final_result);	// Verification Complete
+
+	final_result = check_protection_pos_fault(final_result);
+
+	if (final_result.status != 0)
+	{
+		final_result.next_state = VALVE_STANDBY;
+	}
+
+	return final_result.next_state;
+}
+
 static tValveState ValveLowPowerTask(void)
 {
 	tValveState nextState = VALVE_LOWPOWER;
@@ -1127,13 +1376,16 @@ static uint16_t check_protect_mode(void)
 	}
 	return status;
 }
+
+
 static void valveDiagVs(void)
 {
 	valve.diag.vs.voltage = get_conv_supply_voltage();
+
 	switch (valve.diag.vs.state)
 	{
 	case VS_NORMAL:
-		if (valve.diag.vs.voltage <= VS_UNDER_STOP)
+		if (valve.diag.vs.voltage < VS_UNDER_STOP)
 		{
 			valve.diag.vs.uvTimer++;
 			if (valve.diag.vs.uvTimer >= VS_ENTER_COUNT)
@@ -1142,7 +1394,7 @@ static void valveDiagVs(void)
 				valve.diag.vs.state = VS_UNDERVOLTAGE;
 			}
 		}
-		else if (valve.diag.vs.voltage >= VS_OVER_STOP)
+		else if (valve.diag.vs.voltage > VS_OVER_STOP)
 		{
 			valve.diag.vs.ovTimer++;
 			if (valve.diag.vs.ovTimer >= VS_ENTER_COUNT)
@@ -1170,13 +1422,14 @@ static void valveDiagVs(void)
 		break;
 	case VS_UNDERVOLTAGE:
 
-		if (valve.diag.vs.voltage >= VS_UNDER_RETURN)
+		if (valve.diag.vs.voltage > VS_UNDER_RETURN)
 		{
 			valve.diag.vs.uvTimer++;
 			if (valve.diag.vs.uvTimer >= VS_ENTER_COUNT)
 			{
 				valve.diag.vs.uvTimer = 0u;
 				valve.diag.vs.state = VS_NORMAL;
+				clear_fail_safe_retry_cnt(VS_LOW_ERROR);
 			}
 		}
 		else
@@ -1193,13 +1446,14 @@ static void valveDiagVs(void)
 		break;
 	case VS_OVERVOLTAGE:
 
-		if (valve.diag.vs.voltage <= VS_OVER_RETURN)
+		if (valve.diag.vs.voltage < VS_OVER_RETURN)
 		{
 			valve.diag.vs.ovTimer++;
 			if (valve.diag.vs.ovTimer >= VS_ENTER_COUNT)
 			{
 				valve.diag.vs.ovTimer = 0u;
 				valve.diag.vs.state = VS_NORMAL;
+				clear_fail_safe_retry_cnt(VS_HIGH_ERROR);
 			}
 		}
 		else
@@ -1308,6 +1562,9 @@ static void valveDiagTemp(void)
 			{
 				valve.diag.temp.timer = 0u;
 				valve.diag.temp.state = TEMPERATURE_NORMAL;
+
+				valve.diag.temp.retryCnt = 0;
+				
 			}
 		}
 		else
@@ -1363,14 +1620,10 @@ static void valveDiagIgn(void)
 		}
 		else
 		{
-#if 1
 			if (valve.diag.ign.uvTimer > 0)
 			{
 				valve.diag.ign.uvTimer--;
 			}
-#else
-			valve.diag.ign.uvTimer = 0u;
-#endif
 		}
 		break;
 
@@ -1387,14 +1640,10 @@ static void valveDiagIgn(void)
 		}
 		else
 		{
-#if 1
 			if (valve.diag.ign.uvTimer > 0)
 			{
 				valve.diag.ign.uvTimer--;
 			}
-#else
-			valve.diag.ign.uvTimer = 0u;
-#endif
 		}
 		break;
 
@@ -1426,6 +1675,7 @@ static void valveDiagIgn(void)
 		break;
 	}
 }
+
 static void valveDiagSensor(void)
 {
 	uint8_t sensor_f = SensorGetState();
@@ -1433,42 +1683,50 @@ static void valveDiagSensor(void)
 
 	if ((valve.state != VALVE_CALIBRATION) && (valve.motorMotion == MOTION_RUNNING))
 	{
-
-		if ((valve.diag.motorCurrent >= 500) && (sensor_f == C_STATUS_STOP))
+		if ((valve.diag.motorCurrent < motor.stall.halfThd) && (sensor_f == C_STATUS_STOP))
 		{
-
 			valve.diag.gmr.count += 1;
 		}
 		else
 		{
 			if (valve.diag.gmr.count > 0)
+			{
 				valve.diag.gmr.count -= 1;
+			}
+			else
+			{
+				clear_fail_safe_retry_cnt(SENSOR_OUT_ERROR);
+			}
 		}
 
-		if (valve.diag.gmr.count > 2000) /*20250715*/
+		if (valve.diag.gmr.count > GMR_SENSOR_FAULT_TIME) /*20250715*/
 		{
-			valve.diag.gmr.count = 0;
-			valve.diag.gmr.state = 1;
+			valve.diag.gmr.count = CLEAR;
+			valve.diag.gmr.state = GMR_SENSOR_FAULT;
 		}
 	}
 	else
 	{
-		valve.diag.gmr.count = 0;
+		valve.diag.gmr.count = CLEAR;
 	}
 }
+
 static void valveDiagMcu(void)
 {
 	static uint16_t LV_filterCnt = 0, HV_filterCnt = 0;
 	uint16_t voltage = get_conv_vdda_voltage();
-	if (valve.diag.McuFault == 0)
+
+	switch(valve.diag.McuFault)
 	{
+		case MCU_NORMAL :
 		HV_filterCnt = 0;
-		if (voltage <= 300) /*scale: 10mV*/
+		
+		if (voltage <= MCU_FAULT_VS) /*scale: 10mV*/
 		{
 			LV_filterCnt += 1;
-			if (LV_filterCnt >= 500)
+			if (LV_filterCnt >= MCU_FAULT_COUNT)
 			{
-				valve.diag.McuFault = 1;
+				valve.diag.McuFault = MCU_FAULT;
 			}
 		}
 		else
@@ -1476,16 +1734,18 @@ static void valveDiagMcu(void)
 			if (LV_filterCnt > 0)
 				LV_filterCnt -= 1;
 		}
-	}
-	else
-	{
+		break;
+
+		case MCU_FAULT :
 		LV_filterCnt = 0;
-		if (voltage >= 320) /*scale: 10mV*/
+		
+		if (voltage >= MCU_FAULT_RETURN_VS) /*scale: 10mV*/
 		{
 			HV_filterCnt += 1;
-			if (HV_filterCnt >= 500)
+			if (HV_filterCnt >= MCU_FAULT_COUNT)
 			{
-				valve.diag.McuFault = 0;
+				clear_fail_safe_retry_cnt(MCU_ERROR);
+				valve.diag.McuFault = MCU_NORMAL;
 			}
 		}
 		else
@@ -1493,7 +1753,9 @@ static void valveDiagMcu(void)
 			if (HV_filterCnt > 0)
 				HV_filterCnt -= 1;
 		}
+		break;
 	}
+
 }
 /**
  * \brief Sleep Control Task
@@ -1515,7 +1777,6 @@ static void ValvePowerOffTask(void)
 		{
 			if (valve.sleepState == 0)
 			{
-				/*sleep ready -> calibration ���� (���ܻ��? ������ quick cal, �ƴϸ� full cal */
 				if ((check_fault_mode() == 0) && (check_protect_mode() == 0))
 				{
 					ValveFaultReset();
@@ -1534,7 +1795,6 @@ static void ValvePowerOffTask(void)
 				{
 					if (valve.sleepState == 1)
 					{
-						/*�̺�Ʈ �̷�����*/
 						cOffset = get_gmr_sensor_offset();
 						cPos = valve.pos.currentAngle;
 						diff = cPos - valve.memory.lastAngle;
@@ -1647,6 +1907,7 @@ void ValveLinGetCommand(void)
 		}
 
 #if SOFTSTART_TEST_ENABLE == 1
+/*
 		uint8_t accVal = l_u8_rd_Fwv_Reserved1();
 		switch (accVal)
 		{
@@ -1669,6 +1930,7 @@ void ValveLinGetCommand(void)
 			MotSetSoftStartAcc(30);
 			break;
 		}
+			*/ 
 
 #endif
 #if DUTY_ADJUST_ENABLE == 1
@@ -1706,8 +1968,8 @@ void ValveLinUpdateSignals(void) /*20250714*/
 	l_u8_wr_Fwv_Actual_Mode(valve.comm.actualMode);
 
 	l_bool_wr_Fwv_Position_Fault(valve.pos.fault);
-	//	if (valve.state==VALVE_FAULT)
-	if (valve.comm.faultMode != 0) /*20250714*/
+	
+	if(valve.state == VALVE_FAULT)
 	{
 		l_bool_wr_Fwv_FaultMode(1);
 	}
@@ -1715,21 +1977,18 @@ void ValveLinUpdateSignals(void) /*20250714*/
 	{
 		l_bool_wr_Fwv_FaultMode(0);
 	}
+
+	
 	if (valve.state == VALVE_PROTECTION)
 	{
-		if (valve.comm.faultMode == 0) /*20250714*/
-		{
-			l_bool_wr_Fwv_ProtectMode(1);
-		}
-		else
-		{
-			l_bool_wr_Fwv_ProtectMode(0);
-		}
+		l_bool_wr_Fwv_ProtectMode(1);
 	}
 	else
 	{
 		l_bool_wr_Fwv_ProtectMode(0);
 	}
+
+
 	if ((valve.state == VALVE_CALIBRATION) && (valve.comm.Initial == 1))
 	{
 		l_bool_wr_Fwv_InitialSta(1);
@@ -1757,7 +2016,7 @@ void ValveLinUpdateSignals(void) /*20250714*/
 	/* Byte 1 */
 	l_bool_wr_Fwv_MoveEnable_Status(valve.comm.moving);
 
-	if (valve.motorMotion == MOTION_FAULT) /*20250714*/
+	if (valve.motorMotion == MOTION_STALL) /*20250714*/
 	{
 		if ((valve.diag.stallFault != 0) && (valve.comm.faultMode != 0))
 		{
@@ -1843,49 +2102,29 @@ void ValveLinUpdateSignals(void) /*20250714*/
 	{
 		l_bool_wr_Fwv_Diag_Forced_Status(0);
 	}
+	
 	l_bool_wr_Fwv_Position_Sensor_Fault(valve.diag.gmr.state);
-	l_bool_wr_Fwv_CommErr(valve.diag.linError);
-	valve.diag.linError = 0;
+	
+	if(valve.diag.comm.state == COMMUNICATION_ERROR)
+	{
+		l_bool_wr_Fwv_CommErr(1);
+	}
+	else
+	{
+		l_bool_wr_Fwv_CommErr(0);
+	}
+	
 	/* Byte 2 [7..3] and Byte 3 ~ 4*/
 	l_u16_wr_Fwv_SW_Version(SW_VERSION);
-#if 1
-	int16_t pos = valve.pos.currentAngle;
-	if (pos >= (valve.pos.modeAngle[C_MODE_A] - (int16_t)C_VALVE_ACCURACY_ANGLE))
-	{
-		l_u8_wr_Fwv_Stall_State(0);
-	}
-	else if (pos <= (valve.pos.modeAngle[C_MODE_B] + (int16_t)C_VALVE_ACCURACY_ANGLE))
-	{
-		l_u8_wr_Fwv_Stall_State(0);
-	}
-	else
+
+	if(motor.stall.stallCnt)
 	{
 		l_u8_wr_Fwv_Stall_State(1);
 	}
-#else
-	int16_t pos = valve.pos.currentAngle;
-	if (pos <= (valve.pos.modeAngle[C_MODE_B] + (int16_t)(22.5f * C_GMR_ANGLE_SCALE_FACTOR)))
-	{
-
-		l_u8_wr_Fwv_Stall_State(0);
-	}
-	else if ((pos >= (valve.pos.modeAngle[C_MODE_B] + (int16_t)(22.5f * C_GMR_ANGLE_SCALE_FACTOR))) && (pos <= (valve.pos.modeAngle[C_MODE_B] + (int16_t)(45 * C_GMR_ANGLE_SCALE_FACTOR))))
-	{
-
-		l_u8_wr_Fwv_Stall_State(1);
-	}
-	else if ((pos >= (valve.pos.modeAngle[C_MODE_B] + (int16_t)(45 * C_GMR_ANGLE_SCALE_FACTOR))) && (pos <= (valve.pos.modeAngle[C_MODE_B] + (int16_t)(67.5f * C_GMR_ANGLE_SCALE_FACTOR))))
-	{
-
-		l_u8_wr_Fwv_Stall_State(2);
-	}
 	else
 	{
-
-		l_u8_wr_Fwv_Stall_State(3);
+		l_u8_wr_Fwv_Stall_State(0);
 	}
-
-#endif
 }
 void ValveTargetAngleUpdate(int16_t angle)
 {
@@ -1947,7 +2186,6 @@ void AppValveInit(void)
 	valve.comm.timeOut = 5000;
 	valve.comm.faultMode = 0;
 
-	valve.diag.protType = NONE_ERROR;
 	valve.diag.calFault = 0;
 	valve.diag.motorFault = 0;
 	valve.diag.stallFault = 0;
@@ -1969,7 +2207,8 @@ void AppValveInit(void)
 	valve.diag.motOpenRetryCnt = 0;
 	valve.diag.motShortRetryCnt = 0;
 	valve.diag.linError = 0;
-	valve.diag.linErrRetryCnt = 0;
+	valve.diag.comm.state = COMMUNICATION_UNDEF;
+	valve.diag.comm.linErrRetryCnt = 0;
 	if (eeprom_ReadValveConfig(&valve_gmr_data))
 	{
 		valve.memory.offset = (int16_t)valve_gmr_data.E1DATA0; // 250709-2 - EEPROM Load 1st -> Global Variables
@@ -2017,6 +2256,10 @@ void AppValveTask(void)
 	valveDiagSensor();
 	valveDiagMcu();
 
+	#if LIN_DEBUG_ENABLE
+	g_u16DebugData[0] = valve.state;
+	#endif
+
 	fault_err = check_fault_mode();
 	protect_mode = check_protect_mode();
 	if ((valve.state != VALVE_FAULT) && (fault_err != 0))
@@ -2048,6 +2291,7 @@ void AppValveTask(void)
 	{
 		valve.comm.moving = 0;
 	}
+	
 	switch (valve.state)
 	{
 	case VALVE_INIT:
@@ -2091,7 +2335,6 @@ void AppValveTask(void)
 	/* state changed */
 	if (valve.state != nextState)
 	{
-
 		valve.initStatus = 1;
 		valve.elapsedTime = 0;
 		if (valve.state != VALVE_LOWPOWER)
@@ -2109,22 +2352,24 @@ void AppValveTask(void)
 	if (valve.linLiveTimeOut > 0)
 	{
 		valve.linLiveTimeOut -= 1;
+		valve.diag.comm.state = COMMUNICATION_NORNAL;
+		clear_fail_safe_retry_cnt(VALVE_LIN_COMM_FAULT);
 	}
 	else
 	{
-		valve.diag.linError = 1;
+		valve.diag.comm.state = COMMUNICATION_ERROR;
 	}
-	//	valve.comm.actualMode
+
 	if (Fwv_Request_Event != 0)
 	{
 		Fwv_Request_Event = 0;
 		//		ValveLinGetCommand();
-		valve.linLiveTimeOut = 4000;
+		valve.linLiveTimeOut = LIN_TIMEOUT_COUNT;
 	}
 	if (Fwv_Response_Event != 0)
 	{
 		Fwv_Response_Event = 0;
 		//		ValveLinUpdateSignals();
-		valve.linLiveTimeOut = 4000;
+		valve.linLiveTimeOut = LIN_TIMEOUT_COUNT;
 	}
 }

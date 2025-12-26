@@ -39,6 +39,13 @@ pwm_Off() ?��?��곤옙
 #define PCB_NONE 1
 #define MLX81332_PCB PCB_NONE
 
+#define TIME_1S	1000u
+#define TIME_2S	2000u
+#define TIME_500MS	500u
+
+#define MAX_VALUE_1BYTE	0xffu
+#define MAX_VALUE_2BYTE	0xffffu
+
 #define SENSOR_FBS 0
 #define SENSOR_GMR 1
 #define C_SENSOR_TYPE SENSOR_GMR
@@ -54,7 +61,7 @@ pwm_Off() ?��?��곤옙
 #define UART_FUNC_ENABLE 0
 #define LIN_SLEEP_ENABLE 0
 #define LIN_TIMEOUT_ENABLE 0
-#define LIN_DEBUG_ENABLE 0
+#define LIN_DEBUG_ENABLE 1
 #define POINT_TEST_ENABLE 0
 #define SOFTSTART_TEST_ENABLE 0
 #define DUTY_ADJUST_ENABLE 0
@@ -63,6 +70,8 @@ pwm_Off() ?��?��곤옙
 #define DEBUG_GPIO_ENABLE 0 /* set to 1 to enable GPIO debug */
 #define DEBUG_PIN_6 6
 #define DEBUG_PIN_7 7
+#define OUTPUT_PIN_5 5
+#define NEW_CURCIT_TEST 0
 #define DEBUG_INTERRUT_TIMER 0
 #define DEBUG_MAIN_TASK_DURATION 1
 #define DEBUG_MOT_CTRL_TASK 2
@@ -77,11 +86,12 @@ pwm_Off() ?��?��곤옙
 
 #define C_PWMOUT_MAX_DUTY 2048U
 
-#define CHECK_UNDER_VOLTAGE_CNT		30u
-#define CHECK_OVER_VOLTAGE_CNT		30u
-#define CHECK_HIGH_TEMP_CNT			10u
+#define CHECK_UNDER_VOLTAGE_CNT		600u
+#define CHECK_OVER_VOLTAGE_CNT		600u
+#define CHECK_HIGH_TEMP_CNT			500u
+#define CHECK_LIN_COMM_ERR_CNT		1000u
 #define CHECK_OVER_CURRENT_CNT		10u
-#define CHECK_POSITION_SENSOR_CNT	10u
+#define CHECK_POSITION_SENSOR_CNT	5u
 
 #define C_VOLTAGE_RESOLUTION_SCALE 100u
 #define C_CURRENT_RESOLUTION_SCALE 1000u
@@ -109,13 +119,51 @@ pwm_Off() ?��?��곤옙
 #define C_GMR_SENSOR_ANGLE_LIMIT (360.0f * C_GMR_ANGLE_SCALE_FACTOR)
 #define VDDA_OUTPUT_LEVEL 0 /* 0: 3.3V 1: 5V */
 
+
+//-------------- Fail-Safe--------------------------------------
+
+/**
+ * @brief Position Status Definitions
+ */
+#define POS_NORMAL	0u	/**< Normal operating state for position. */
+#define POS_FAULT	1u	/**< Fault state for position. */
+
+/**
+ * @brief MCU Status Definitions
+ */
+#define MCU_NORMAL 0u	/**< MCU is operating normally. */
+#define MCU_FAULT  1u	/**< Fault detected in the MCU. */
+
+/**
+ * @brief GMR Sensor Status and Timing Definitions
+ */
+#define GMR_SENSOR_FAULT_TIME	500u	/**< Time threshold (in ms/ticks) before declaring a GMR sensor fault. */
+#define GMR_SENSOR_NORMAL	0		/**< GMR sensor is operating normally. */
+#define GMR_SENSOR_FAULT 	1		/**< GMR sensor fault detected. */
+
+/**
+ * @brief GMR STATUS Definitions
+ */
+#define GMR_FAULT_RETRY_CNT	3
+
+/**
+ * @brief MOTOR STALL Status Definitions
+ */
+#define OBSTRUCTION_STALL_RETRY_CNT	3
+
+
 typedef enum
 {
 	C_DIR_NONE,
 	C_DIR_CW,
 	C_DIR_CCW
 } tMotDirection;
-
+typedef enum
+{
+	COMMUNICATION_NORNAL = 0,
+	COMMUNICATION_ERROR,
+	COMMUNICATION_UNDEF
+} tLinComm;
 typedef enum
 {
 	VS_NORMAL = 0,
@@ -165,12 +213,16 @@ typedef enum
 	MOT_STALL_FAULT,
 	MOT_SHORT_FAULT,
 	MOT_OPEN_FAULT,
+	VALVE_LIN_COMM_FAULT,
 	UNDEF_ERROR
 } tProtectCondition;
 
 extern uint16_t g_u16DebugData[12];
 extern uint16_t l_u16LinLostTimeoutDelay;
 extern uint16_t l_u16PwmLostTimeoutDelay;
+
+extern uint16_t test_Timer;
+extern uint16_t test_relese_Timer;
 
 void system_timer_ISR();
 #endif /* CODE_SRC_DEFINES_H_ */

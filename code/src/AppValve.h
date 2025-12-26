@@ -24,7 +24,7 @@
 #define VS_UNDER_RETURN (uint16_t)(9.0f * C_VOLTAGE_RESOLUTION_SCALE) //
 #define VS_OVER_STOP (uint16_t)(17.0f * C_VOLTAGE_RESOLUTION_SCALE)	  //
 #define VS_OVER_RETURN (uint16_t)(16.0f * C_VOLTAGE_RESOLUTION_SCALE) //
-#define VS_ENTER_COUNT 1000u
+#define VS_ENTER_COUNT 200u
 
 #define IGN_UNDER_STOP (uint16_t)(7.0f * C_VOLTAGE_RESOLUTION_SCALE)   //
 #define IGN_UNDER_RETURN (uint16_t)(8.0f * C_VOLTAGE_RESOLUTION_SCALE) //
@@ -37,6 +37,14 @@
 #define TEMP_OVER_STOP ((135u * C_TEMP_RESOLUTION_SCALE) + C_TEMP_CONV_OFFSET)	 //
 #define TEMP_OVER_RETURN ((125u * C_TEMP_RESOLUTION_SCALE) + C_TEMP_CONV_OFFSET) //
 #define TEMP_ENTER_COUNT 100u
+
+#define MCU_FAULT_COUNT 		200u
+#define MCU_FAULT_VS 			300u
+#define MCU_FAULT_RETURN_VS 	320u
+#define MCU_FAULT_RERTY_TIME 	500u
+
+
+#define LIN_TIMEOUT_COUNT 4000u
 
 typedef enum
 {
@@ -53,9 +61,17 @@ typedef enum
 	VALVE_UNDEF
 } tValveState;
 
+typedef struct 
+{
+	uint8_t status;
+	tValveState next_state;
+}Protectoin_Check_Result;
+
+
 extern tProtectCondition u16EventState;
 extern uint16_t u16EventValue;
 
+void clear_fail_safe_retry_cnt(tProtectCondition event_state);
 void ValveTargetAngleUpdate(int16_t angle);
 tValveState get_sys_valve_mode(void);
 tValveState get_valve_mode(void);
@@ -65,6 +81,23 @@ uint16_t get_valve_motCurrent(void);
 void ValveLinGetCommand(void);
 void ValveLinUpdateSignals(void);
 void AppValveInit(void);
+void check_retry_cnt_protection_uv(void);
+void check_retry_cnt_protection_ov(void);
+Protectoin_Check_Result check_protection_uv_ov(Protectoin_Check_Result result_data);
+Protectoin_Check_Result check_protection_temp(Protectoin_Check_Result result_data);
+void check_retry_cnt_protection_comm(void);
+Protectoin_Check_Result check_protection_comm(Protectoin_Check_Result result_data);
+void check_retry_cnt_protection_oc(void);
+Protectoin_Check_Result check_protection_oc(Protectoin_Check_Result result_data);
+void check_retry_cnt_protection_pos_fault(void);
+Protectoin_Check_Result check_protection_pos_fault(Protectoin_Check_Result result_data);
+void check_retry_cnt_protection_mcu_fault(void);
+Protectoin_Check_Result check_protection_mcu_fault(Protectoin_Check_Result result_data);
+void check_retry_cnt_protection_obstruction_stall(void);
+Protectoin_Check_Result check_protection_obstruction_stall(Protectoin_Check_Result result_data);
+void check_retry_cnt_protection_gmr_fault(void);
+Protectoin_Check_Result check_protection_gmr_fault(Protectoin_Check_Result result_data);
+void event_memry_save(tProtectCondition event_state, uint16_t event_value);
 void AppValveTask(void);
 
 #endif /* CODE_SRC_APPVALVE_H_ */

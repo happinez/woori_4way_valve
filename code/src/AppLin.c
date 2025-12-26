@@ -59,8 +59,8 @@ void AppLinTask(void)
 		l_u8_wr_d_valve_status((uint8_t)(g_u16DebugData[0]));
 		l_u8_wr_d_motor_status((uint8_t)(g_u16DebugData[1]));
 		l_u16_wr_d_debug_1((uint16_t)(g_u16DebugData[2]));
-		/*l_u8_wr_DEBUG1_U8_4((uint8_t)(g_u16DebugData[1] >> 8));
-		l_u8_wr_DEBUG1_U8_5((uint8_t)(g_u16DebugData[2]));
+		l_u8_wr_d_debug_2((uint8_t)(g_u16DebugData[3]));
+		/*l_u8_wr_DEBUG1_U8_5((uint8_t)(g_u16DebugData[2]));
 		l_u8_wr_DEBUG1_U8_6((uint8_t)(g_u16DebugData[2] >> 8));
 		l_u8_wr_DEBUG1_U8_7((uint8_t)(g_u16DebugData[3]));
 		l_u8_wr_DEBUG1_U8_8((uint8_t)(g_u16DebugData[3] >> 8));

@@ -676,7 +676,7 @@ Common symbol       size              file
 
 _l16_SinNegMaxPeak  0x2               obj/app_sensor.o
 _l16_SinPosMinPeak  0x2               obj/app_sensor.o
-_valve              0x72              obj/AppValve.o
+_valve              0x78              obj/AppValve.o
 _clock_error_OTempCal
                     0x2               obj/conv_clock_error.o
 _l_sl1_flags        0x4               obj/lin_signals.o
@@ -801,10 +801,14 @@ Discarded input sections
  .text          0x0000000000000000        0x0 obj/AppValve.o
  .data          0x0000000000000000        0x0 obj/AppValve.o
  .bss           0x0000000000000000        0x0 obj/AppValve.o
+ .text.event_memry_save
+                0x0000000000000000        0xc obj/AppValve.o
  .text.ValveTargetAngleUpdate
                 0x0000000000000000        0x6 obj/AppValve.o
  .text.get_sys_valve_mode
                 0x0000000000000000       0x14 obj/AppValve.o
+ .data.tset_flag
+                0x0000000000000000        0x1 obj/AppValve.o
  .text          0x0000000000000000        0x0 obj/adc.o
  .data          0x0000000000000000        0x0 obj/adc.o
  .bss           0x0000000000000000        0x0 obj/adc.o
@@ -901,8 +905,6 @@ Discarded input sections
                 0x0000000000000000        0x6 obj/dcm_driver.o
  .text.setFaultDetect
                 0x0000000000000000       0x2e obj/dcm_driver.o
- .bss.i         0x0000000000000000        0x2 obj/dcm_driver.o
- .bss.test      0x0000000000000000      0x2bc obj/dcm_driver.o
  .text          0x0000000000000000        0x0 obj/diagnostic.o
  .data          0x0000000000000000        0x0 obj/diagnostic.o
  .bss           0x0000000000000000        0x0 obj/diagnostic.o
@@ -1015,8 +1017,6 @@ Discarded input sections
                 0x0000000000000000        0x1 obj/main.o
  .data.g_bReset
                 0x0000000000000000        0x1 obj/main.o
- .bss.g_u16DebugData
-                0x0000000000000000       0x18 obj/main.o
  .text          0x0000000000000000        0x0 obj/protection.o
  .data          0x0000000000000000        0x0 obj/protection.o
  .bss           0x0000000000000000        0x0 obj/protection.o
@@ -5050,7 +5050,7 @@ LOAD ../../code/camcu_platform/config/../lib/81332B02\libbuffers.a
 LOAD ../../code/camcu_platform/config/../lib/81332B02\libmath.a
 LOAD ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a
 END GROUP
-                0x000000000090d8f3                FL_SIGN = 0x90d8f3
+                0x0000000000fb10b4                FL_SIGN = 0xfb10b4
 LOAD c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a
 LOAD c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/../../../../mlx16/lib/mlx16-fx\libc.a
 LOAD c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a
@@ -5173,7 +5173,7 @@ END GROUP
                 0x00000000000010a4        0x1 obj/lin_signals.o
                 0x00000000000010a4                _ml_ConfiguredNAD
  *fill*         0x00000000000010a5        0x1 
- .data.__i16ChipTemperature_8562
+ .data.__i16ChipTemperature_8613
                 0x00000000000010a6        0x2 obj/main.o
  .data.l_uart_plot_dummy
                 0x00000000000010a8        0x2 obj/uart_plot.o
@@ -5181,7 +5181,7 @@ END GROUP
                 0x00000000000010aa                __data_end = .
                 0x0000000000000090                __data_size = (__data_end - __data_start)
 
-.bss            0x00000000000010aa      0x384 load address 0x0000000000005bbe
+.bss            0x00000000000010aa      0x3a8 load address 0x0000000000005bbe
                 0x00000000000010aa                . = ALIGN (0x2)
                 0x00000000000010aa                __bss_start = .
  *(.bss)
@@ -5198,11 +5198,11 @@ END GROUP
  .bss.Fwv_lin_sleep_enable
                 0x00000000000010ad        0x1 obj/AppLin.o
                 0x00000000000010ad                _Fwv_lin_sleep_enable
- .bss.__LV_filterCnt_5875
+ .bss.__LV_filterCnt_5529
                 0x00000000000010ae        0x2 obj/AppValve.o
- .bss.__HV_filterCnt_5876
+ .bss.__HV_filterCnt_5530
                 0x00000000000010b0        0x2 obj/AppValve.o
- .bss.__ignNormalTimer_5863
+ .bss.__ignNormalTimer_5517
                 0x00000000000010b2        0x2 obj/AppValve.o
  .bss.u16EventValue
                 0x00000000000010b4        0x2 obj/AppValve.o
@@ -5259,7 +5259,7 @@ END GROUP
  .bss.lepmFlag  0x0000000000001188        0x1 obj/fw_mls_device_id.o
  .bss.isAwaitingResponseTransmitted
                 0x0000000000001189        0x1 obj/fw_mls_device_id.o
- .bss.__u8ColinErrorState_7224
+ .bss.__u8ColinErrorState_7232
                 0x000000000000118a        0x1 obj/lin22.o
  .bss.bLinTimeoutActive
                 0x000000000000118b        0x1 obj/lin22.o
@@ -5278,125 +5278,136 @@ END GROUP
  .bss.l_signals
                 0x0000000000001194       0x20 obj/lin_signals.o
                 0x0000000000001194                _l_signals
+ .bss.test_relese_Timer
+                0x00000000000011b4        0x2 obj/main.o
+                0x00000000000011b4                _test_relese_Timer
+ .bss.test_Timer
+                0x00000000000011b6        0x2 obj/main.o
+                0x00000000000011b6                _test_Timer
  .bss.g_bUnderVoltageDetected
-                0x00000000000011b4        0x1 obj/main.o
-                0x00000000000011b4                _g_bUnderVoltageDetected
+                0x00000000000011b8        0x1 obj/main.o
+                0x00000000000011b8                _g_bUnderVoltageDetected
+ *fill*         0x00000000000011b9        0x1 
+ .bss.g_u16DebugData
+                0x00000000000011ba       0x18 obj/main.o
+                0x00000000000011ba                _g_u16DebugData
  .bss.g_e8OverCurrent
-                0x00000000000011b5        0x1 obj/protection.o
-                0x00000000000011b5                _g_e8OverCurrent
+                0x00000000000011d2        0x1 obj/protection.o
+                0x00000000000011d2                _g_e8OverCurrent
+ *fill*         0x00000000000011d3        0x1 
  .bss.g_e8ShortOcc
-                0x00000000000011b6        0x2 obj/protection.o
-                0x00000000000011b6                _g_e8ShortOcc
+                0x00000000000011d4        0x2 obj/protection.o
+                0x00000000000011d4                _g_e8ShortOcc
  .bss.g_e8ErrorOverTemperature
-                0x00000000000011b8        0x2 obj/protection.o
-                0x00000000000011b8                _g_e8ErrorOverTemperature
+                0x00000000000011d6        0x2 obj/protection.o
+                0x00000000000011d6                _g_e8ErrorOverTemperature
  .bss.g_e8ErrorVoltage
-                0x00000000000011ba        0x2 obj/protection.o
-                0x00000000000011ba                _g_e8ErrorVoltage
+                0x00000000000011d8        0x2 obj/protection.o
+                0x00000000000011d8                _g_e8ErrorVoltage
  .bss.u16LTcopy
-                0x00000000000011bc        0x8 obj/pwm.o
+                0x00000000000011da        0x8 obj/pwm.o
  .bss.l_u16Payload
-                0x00000000000011c4        0x8 obj/uart_plot.o
+                0x00000000000011e2        0x8 obj/uart_plot.o
  .bss.l_au8UartRdBufB
-                0x00000000000011cc        0xa obj/uart_plot.o
+                0x00000000000011ea        0xa obj/uart_plot.o
  .bss.l_au8UartRdBufA
-                0x00000000000011d6        0xa obj/uart_plot.o
+                0x00000000000011f4        0xa obj/uart_plot.o
  .bss.l_ramCopy
-                0x00000000000011e0       0x18 obj/unirom.o
+                0x00000000000011fe       0x18 obj/unirom.o
  *(COMMON)
- COMMON         0x00000000000011f8       0xcc obj/AppValve.o
-                0x00000000000011f8                _valve
-                0x000000000000126a                _sensor
-                0x0000000000001276                _motor
- COMMON         0x00000000000012c4       0x22 obj/adc.o
-                0x00000000000012c4                _dBase
-                0x00000000000012de                _g_u16IOADC4
-                0x00000000000012e0                _g_u16IOADC3
-                0x00000000000012e2                _g_u16IOADC2
-                0x00000000000012e4                _g_u16IOADC1
- COMMON         0x00000000000012e6       0x14 obj/app_sensor.o
-                0x00000000000012e6                _l16_SinNegMaxPeak
-                0x00000000000012e8                _l16_SinPosMinPeak
-                0x00000000000012ea                _l16_CosinPosMinPeak
-                0x00000000000012ec                _l16_CosinPosMaxPeak
-                0x00000000000012ee                _l16_SinPosMaxPeak
-                0x00000000000012f0                _l16_CosinNegMinPeak
-                0x00000000000012f2                _l16_SinNegMinPeak
-                0x00000000000012f4                _l16_CosinNegMaxPeak
-                0x00000000000012f6                _l16_SinOutputOffset
-                0x00000000000012f8                _l16_CosinOutputOffset
- COMMON         0x00000000000012fa        0x8 obj/conv_clock_error.o
-                0x00000000000012fa                _clock_error_OTempCal
-                0x00000000000012fc                _clock_error_OClockCal
-                0x00000000000012fe                _clock_error_SClockLowCal
-                0x0000000000001300                _clock_error_SClockHighCal
- COMMON         0x0000000000001302        0x6 obj/conv_high_voltage.o
-                0x0000000000001302                _calib_hvi
- COMMON         0x0000000000001308        0x6 obj/conv_low_voltage.o
-                0x0000000000001308                _calib_lvi
- COMMON         0x000000000000130e        0xc obj/conv_motor_voltage.o
-                0x000000000000130e                _calib_vsmf
-                0x0000000000001314                _calib_vsm
- COMMON         0x000000000000131a        0x6 obj/conv_shunt_current.o
-                0x000000000000131a                _calib_current
- COMMON         0x0000000000001320        0xc obj/eeprom_app.o
-                0x0000000000001320                _valve_diag_data
-                0x0000000000001326                _valve_gmr_data
- COMMON         0x000000000000132c       0xa6 obj/fw_mls_api.o
-                0x000000000000132c                _ldt_TL_data
-                0x00000000000013c2                _ld_ResponseTransmittedMultipleHandler
-                0x00000000000013c6                _ld_RequestMultipleHandler
-                0x00000000000013ca                _ld_FunctionalRequestMultipleHandler
-                0x00000000000013ce                _ld_ErrorDetectedMultipleHandler
- COMMON         0x00000000000013d2        0x2 obj/lin_core.o
-                0x00000000000013d2                _dummy
- COMMON         0x00000000000013d4        0x2 obj/lin_core_sl.o
-                0x00000000000013d4                _s_ifcStatus
- COMMON         0x00000000000013d6        0x7 obj/lin_signals.o
-                0x00000000000013d6                _l_sl1_flags
-                0x00000000000013da                _node_configuration
- *fill*         0x00000000000013dd        0x1 
- COMMON         0x00000000000013de       0x34 obj/main.o
-                0x00000000000013de                _u16_Duty_Dec_Range
-                0x00000000000013e0                _g_u16PositionSensor
-                0x00000000000013e2                _l_u32SupplyVoltageFilter
-                0x00000000000013e6                _u16_CONV_Target_Angle
-                0x00000000000013e8                _g_i16ChipTemperature
-                0x00000000000013ea                _u16_Target_Angle_UCL
-                0x00000000000013ec                _u16_Angle_Gap
-                0x00000000000013ee                _u16_IGN_PORT_CNT
-                0x00000000000013f0                _u16_LIN_Target_Angle
-                0x00000000000013f2                _g_u16VDDA
-                0x00000000000013f4                _SetDuty
-                0x00000000000013f6                _g_u16IO3
-                0x00000000000013f8                _l_u32ChipTemperatureFilter
-                0x00000000000013fc                _Angle_Hysteresis
-                0x00000000000013fe                _u16_Target_Angle_LCL
-                0x0000000000001400                _e8ErrorOverTemperature
-                0x0000000000001402                _g_u16MotorSupplyVoltage
-                0x0000000000001404                _g_i16ShuntCurrent
-                0x0000000000001406                _g_u16VBGD
-                0x0000000000001408                _e8ErrorVoltage
-                0x000000000000140a                _g_u16SupplyVoltage
-                0x000000000000140c                _e8ShortOcc
-                0x000000000000140e                _l_u32MotorSupplyVoltageFilter
- COMMON         0x0000000000001412       0x1c obj/swtimer.o
-                0x0000000000001412                _g_pTimer
-                0x000000000000142e                . = ALIGN (0x2)
-                0x000000000000142e                __bss_end = .
-                0x0000000000000384                __bss_size = (__bss_end - __bss_start)
+ COMMON         0x0000000000001216       0xd2 obj/AppValve.o
+                0x0000000000001216                _valve
+                0x000000000000128e                _sensor
+                0x000000000000129a                _motor
+ COMMON         0x00000000000012e8       0x22 obj/adc.o
+                0x00000000000012e8                _dBase
+                0x0000000000001302                _g_u16IOADC4
+                0x0000000000001304                _g_u16IOADC3
+                0x0000000000001306                _g_u16IOADC2
+                0x0000000000001308                _g_u16IOADC1
+ COMMON         0x000000000000130a       0x14 obj/app_sensor.o
+                0x000000000000130a                _l16_SinNegMaxPeak
+                0x000000000000130c                _l16_SinPosMinPeak
+                0x000000000000130e                _l16_CosinPosMinPeak
+                0x0000000000001310                _l16_CosinPosMaxPeak
+                0x0000000000001312                _l16_SinPosMaxPeak
+                0x0000000000001314                _l16_CosinNegMinPeak
+                0x0000000000001316                _l16_SinNegMinPeak
+                0x0000000000001318                _l16_CosinNegMaxPeak
+                0x000000000000131a                _l16_SinOutputOffset
+                0x000000000000131c                _l16_CosinOutputOffset
+ COMMON         0x000000000000131e        0x8 obj/conv_clock_error.o
+                0x000000000000131e                _clock_error_OTempCal
+                0x0000000000001320                _clock_error_OClockCal
+                0x0000000000001322                _clock_error_SClockLowCal
+                0x0000000000001324                _clock_error_SClockHighCal
+ COMMON         0x0000000000001326        0x6 obj/conv_high_voltage.o
+                0x0000000000001326                _calib_hvi
+ COMMON         0x000000000000132c        0x6 obj/conv_low_voltage.o
+                0x000000000000132c                _calib_lvi
+ COMMON         0x0000000000001332        0xc obj/conv_motor_voltage.o
+                0x0000000000001332                _calib_vsmf
+                0x0000000000001338                _calib_vsm
+ COMMON         0x000000000000133e        0x6 obj/conv_shunt_current.o
+                0x000000000000133e                _calib_current
+ COMMON         0x0000000000001344        0xc obj/eeprom_app.o
+                0x0000000000001344                _valve_diag_data
+                0x000000000000134a                _valve_gmr_data
+ COMMON         0x0000000000001350       0xa6 obj/fw_mls_api.o
+                0x0000000000001350                _ldt_TL_data
+                0x00000000000013e6                _ld_ResponseTransmittedMultipleHandler
+                0x00000000000013ea                _ld_RequestMultipleHandler
+                0x00000000000013ee                _ld_FunctionalRequestMultipleHandler
+                0x00000000000013f2                _ld_ErrorDetectedMultipleHandler
+ COMMON         0x00000000000013f6        0x2 obj/lin_core.o
+                0x00000000000013f6                _dummy
+ COMMON         0x00000000000013f8        0x2 obj/lin_core_sl.o
+                0x00000000000013f8                _s_ifcStatus
+ COMMON         0x00000000000013fa        0x7 obj/lin_signals.o
+                0x00000000000013fa                _l_sl1_flags
+                0x00000000000013fe                _node_configuration
+ *fill*         0x0000000000001401        0x1 
+ COMMON         0x0000000000001402       0x34 obj/main.o
+                0x0000000000001402                _u16_Duty_Dec_Range
+                0x0000000000001404                _g_u16PositionSensor
+                0x0000000000001406                _l_u32SupplyVoltageFilter
+                0x000000000000140a                _u16_CONV_Target_Angle
+                0x000000000000140c                _g_i16ChipTemperature
+                0x000000000000140e                _u16_Target_Angle_UCL
+                0x0000000000001410                _u16_Angle_Gap
+                0x0000000000001412                _u16_IGN_PORT_CNT
+                0x0000000000001414                _u16_LIN_Target_Angle
+                0x0000000000001416                _g_u16VDDA
+                0x0000000000001418                _SetDuty
+                0x000000000000141a                _g_u16IO3
+                0x000000000000141c                _l_u32ChipTemperatureFilter
+                0x0000000000001420                _Angle_Hysteresis
+                0x0000000000001422                _u16_Target_Angle_LCL
+                0x0000000000001424                _e8ErrorOverTemperature
+                0x0000000000001426                _g_u16MotorSupplyVoltage
+                0x0000000000001428                _g_i16ShuntCurrent
+                0x000000000000142a                _g_u16VBGD
+                0x000000000000142c                _e8ErrorVoltage
+                0x000000000000142e                _g_u16SupplyVoltage
+                0x0000000000001430                _e8ShortOcc
+                0x0000000000001432                _l_u32MotorSupplyVoltageFilter
+ COMMON         0x0000000000001436       0x1c obj/swtimer.o
+                0x0000000000001436                _g_pTimer
+                0x0000000000001452                . = ALIGN (0x2)
+                0x0000000000001452                __bss_end = .
+                0x00000000000003a8                __bss_size = (__bss_end - __bss_start)
 
-.noinit         0x000000000000142e        0x0 load address 0x0000000000005bbe
-                0x000000000000142e                . = ALIGN (0x2)
-                0x000000000000142e                __noinit_start = .
+.noinit         0x0000000000001452        0x0 load address 0x0000000000005bbe
+                0x0000000000001452                . = ALIGN (0x2)
+                0x0000000000001452                __noinit_start = .
  *(.noinit)
-                0x000000000000142e                . = ALIGN (0x2)
-                0x000000000000142e                __noinit_end = .
+                0x0000000000001452                . = ALIGN (0x2)
+                0x0000000000001452                __noinit_end = .
                 0x0000000000000000                __noinit_size = (__noinit_end - __noinit_start)
                 0x0000000000000080                PROVIDE (__min_stack_size, 0x80)
 
-.fw_stack       0x000000000000142e        0x0 load address 0x0000000000005bbe
-                0x000000000000142e                PROVIDE (_fw_stack, .)
+.fw_stack       0x0000000000001452        0x0 load address 0x0000000000005bbe
+                0x0000000000001452                PROVIDE (_fw_stack, .)
 
 .bist_stat
  *(.bist_stat.bistHeader)
@@ -5409,656 +5420,707 @@ END GROUP
                 0x00000000000017ea                PROVIDE (__stack_end, (ORIGIN (ram) + 0x7ea))
                 0x0000000000001800                PROVIDE (__ram_end, (((ORIGIN (ram) + 0x7ea) + 0xe) + 0x8))
 
-.flash_data     0x0000000000005bbe     0x477a
+.flash_data     0x0000000000005bbe     0x4a06
  *(.rodata)
  .rodata        0x0000000000005bbe        0x4 obj/lin22.o
  .rodata        0x0000000000005bc2      0x100 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_clz.o)
                 0x0000000000005bc2                ___clz_tab
  *(.rodata.*)
+ .rodata.clear_fail_safe_retry_cnt
+                0x0000000000005cc2       0x1a obj/AppValve.o
  .rodata.AppValveTask
-                0x0000000000005cc2       0x2a obj/AppValve.o
+                0x0000000000005cdc       0x2a obj/AppValve.o
  .rodata.adc_raw_update
-                0x0000000000005cec       0x10 obj/app_sensor.o
+                0x0000000000005d06       0x10 obj/app_sensor.o
  .rodata.IGNconversionMap
-                0x0000000000005cfc       0x20 obj/app_sensor.o
+                0x0000000000005d16       0x20 obj/app_sensor.o
  .rodata.app_motor_task
-                0x0000000000005d1c       0x10 obj/dcm_driver.o
+                0x0000000000005d36       0x10 obj/dcm_driver.o
  .rodata.eeprom_defaults
-                0x0000000000005d2c       0x18 obj/eeprom_app.o
-                0x0000000000005d2c                _eeprom_defaults
+                0x0000000000005d46       0x18 obj/eeprom_app.o
+                0x0000000000005d46                _eeprom_defaults
  .rodata.ld_DiagRequest
-                0x0000000000005d44        0xe obj/lin_cfg_sl.o
+                0x0000000000005d5e        0xe obj/lin_cfg_sl.o
  .rodata.l_ErrorDetected
-                0x0000000000005d52       0x1a obj/lin_core_sl.o
+                0x0000000000005d6c       0x1a obj/lin_core_sl.o
  .rodata.__VPC_Fwv_Resp_flags_mask_3909
-                0x0000000000005d6c        0x4 obj/lin_signals.o
+                0x0000000000005d86        0x4 obj/lin_signals.o
  .rodata.__VPC_Fwv_Ctrl_flags_mask_3985
-                0x0000000000005d70        0x4 obj/lin_signals.o
+                0x0000000000005d8a        0x4 obj/lin_signals.o
  .rodata.__Debug_Frame_flags_mask_3952
-                0x0000000000005d74        0x4 obj/lin_signals.o
+                0x0000000000005d8e        0x4 obj/lin_signals.o
  .rodata.frameList
-                0x0000000000005d78        0xc obj/lin_signals.o
-                0x0000000000005d78                _frameList
+                0x0000000000005d92        0xc obj/lin_signals.o
+                0x0000000000005d92                _frameList
  .rodata.l_sl1_VPC_Fwv_Ctrl_frame
-                0x0000000000005d84        0x2 obj/lin_signals.o
+                0x0000000000005d9e        0x2 obj/lin_signals.o
  .rodata.l_sl1_Debug_Frame_frame
-                0x0000000000005d86        0x2 obj/lin_signals.o
+                0x0000000000005da0        0x2 obj/lin_signals.o
  .rodata.l_sl1_VPC_Fwv_Resp_frame
-                0x0000000000005d88        0x2 obj/lin_signals.o
+                0x0000000000005da2        0x2 obj/lin_signals.o
  .rodata.ml_ProductID
-                0x0000000000005d8a        0x6 obj/lin_signals.o
-                0x0000000000005d8a                _ml_ProductID
+                0x0000000000005da4        0x6 obj/lin_signals.o
+                0x0000000000005da4                _ml_ProductID
  .rodata.ml_InitialNAD
-                0x0000000000005d90        0x1 obj/lin_signals.o
-                0x0000000000005d90                _ml_InitialNAD
- *fill*         0x0000000000005d91        0x1 
+                0x0000000000005daa        0x1 obj/lin_signals.o
+                0x0000000000005daa                _ml_InitialNAD
+ *fill*         0x0000000000005dab        0x1 
  .rodata.ATAN_LUT
-                0x0000000000005d92      0x204 ../../code/camcu_platform/config/../lib/81332B02\libmath.a(atan.o)
-                0x0000000000005d92                _ATAN_LUT
+                0x0000000000005dac      0x204 ../../code/camcu_platform/config/../lib/81332B02\libmath.a(atan.o)
+                0x0000000000005dac                _ATAN_LUT
  *(.rodata._mlx_*)
-                0x0000000000005f96                . = ALIGN (0x2)
+                0x0000000000005fb0                . = ALIGN (0x2)
  *(.text)
- .text          0x0000000000005f96       0x44 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_gt_sf.o)
-                0x0000000000005f96                ___gtsf2
- .text          0x0000000000005fda       0x6e c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_si_to_sf.o)
-                0x0000000000005fda                ___floatsisf
- .text          0x0000000000006048       0x60 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_clzsi2.o)
-                0x0000000000006048                ___clzsi2
- .text          0x00000000000060a8      0x160 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_pack_sf.o)
-                0x00000000000060a8                ___pack_f
- .text          0x0000000000006208       0xbc c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_unpack_sf.o)
-                0x0000000000006208                ___unpack_f
- .text          0x00000000000062c4       0x8c c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_fpcmp_parts_sf.o)
-                0x00000000000062c4                ___fpcmp_parts_f
+ .text          0x0000000000005fb0       0x44 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_gt_sf.o)
+                0x0000000000005fb0                ___gtsf2
+ .text          0x0000000000005ff4       0x6e c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_si_to_sf.o)
+                0x0000000000005ff4                ___floatsisf
+ .text          0x0000000000006062       0x60 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_clzsi2.o)
+                0x0000000000006062                ___clzsi2
+ .text          0x00000000000060c2      0x160 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_pack_sf.o)
+                0x00000000000060c2                ___pack_f
+ .text          0x0000000000006222       0xbc c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_unpack_sf.o)
+                0x0000000000006222                ___unpack_f
+ .text          0x00000000000062de       0x8c c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_fpcmp_parts_sf.o)
+                0x00000000000062de                ___fpcmp_parts_f
  *(.text.*)
  .text.AppLinInit
-                0x0000000000006350        0xc obj/AppLin.o
-                0x0000000000006350                _AppLinInit
+                0x000000000000636a        0xc obj/AppLin.o
+                0x000000000000636a                _AppLinInit
  .text.AppLinTask
-                0x000000000000635c       0x76 obj/AppLin.o
-                0x000000000000635c                _AppLinTask
+                0x0000000000006376       0xb8 obj/AppLin.o
+                0x0000000000006376                _AppLinTask
  .text.AppLinSleepEnter
-                0x00000000000063d2        0xa obj/AppLin.o
-                0x00000000000063d2                _AppLinSleepEnter
+                0x000000000000642e        0xa obj/AppLin.o
+                0x000000000000642e                _AppLinSleepEnter
  .text.check_protect_mode
-                0x00000000000063dc       0x4e obj/AppValve.o
- .text.ValveFaultReset
-                0x000000000000642a       0x44 obj/AppValve.o
- .text.ValveErrorReset
-                0x000000000000646e       0x34 obj/AppValve.o
+                0x0000000000006438       0x4e obj/AppValve.o
  .text.check_fault_mode
-                0x00000000000064a2       0x2e obj/AppValve.o
+                0x0000000000006486       0x2e obj/AppValve.o
+ .text.clear_fail_safe_retry_cnt
+                0x00000000000064b4       0x70 obj/AppValve.o
+                0x00000000000064b4                _clear_fail_safe_retry_cnt
+ .text.ValveFaultReset
+                0x0000000000006524       0x3e obj/AppValve.o
+ .text.check_retry_cnt_protection_uv
+                0x0000000000006562       0x20 obj/AppValve.o
+                0x0000000000006562                _check_retry_cnt_protection_uv
+ .text.check_retry_cnt_protection_ov
+                0x0000000000006582       0x20 obj/AppValve.o
+                0x0000000000006582                _check_retry_cnt_protection_ov
+ .text.check_protection_uv_ov
+                0x00000000000065a2       0x4a obj/AppValve.o
+                0x00000000000065a2                _check_protection_uv_ov
+ .text.check_protection_temp
+                0x00000000000065ec       0x1c obj/AppValve.o
+                0x00000000000065ec                _check_protection_temp
+ .text.check_retry_cnt_protection_comm
+                0x0000000000006608       0x10 obj/AppValve.o
+                0x0000000000006608                _check_retry_cnt_protection_comm
+ .text.check_protection_comm
+                0x0000000000006618       0x40 obj/AppValve.o
+                0x0000000000006618                _check_protection_comm
+ .text.check_retry_cnt_protection_oc
+                0x0000000000006658       0x22 obj/AppValve.o
+                0x0000000000006658                _check_retry_cnt_protection_oc
+ .text.check_protection_oc
+                0x000000000000667a       0x60 obj/AppValve.o
+                0x000000000000667a                _check_protection_oc
+ .text.check_retry_cnt_protection_pos_fault
+                0x00000000000066da       0x22 obj/AppValve.o
+                0x00000000000066da                _check_retry_cnt_protection_pos_fault
+ .text.check_protection_pos_fault
+                0x00000000000066fc       0x5c obj/AppValve.o
+                0x00000000000066fc                _check_protection_pos_fault
+ .text.check_retry_cnt_protection_mcu_fault
+                0x0000000000006758       0x22 obj/AppValve.o
+                0x0000000000006758                _check_retry_cnt_protection_mcu_fault
+ .text.check_protection_mcu_fault
+                0x000000000000677a       0x36 obj/AppValve.o
+                0x000000000000677a                _check_protection_mcu_fault
+ .text.check_retry_cnt_protection_obstruction_stall
+                0x00000000000067b0       0x22 obj/AppValve.o
+                0x00000000000067b0                _check_retry_cnt_protection_obstruction_stall
+ .text.check_protection_obstruction_stall
+                0x00000000000067d2       0x4e obj/AppValve.o
+                0x00000000000067d2                _check_protection_obstruction_stall
+ .text.check_retry_cnt_protection_gmr_fault
+                0x0000000000006820       0x30 obj/AppValve.o
+                0x0000000000006820                _check_retry_cnt_protection_gmr_fault
+ .text.check_protection_gmr_fault
+                0x0000000000006850       0x44 obj/AppValve.o
+                0x0000000000006850                _check_protection_gmr_fault
  .text.ValveLinGetCommand
-                0x00000000000064d0       0x5c obj/AppValve.o
-                0x00000000000064d0                _ValveLinGetCommand
+                0x0000000000006894       0x5c obj/AppValve.o
+                0x0000000000006894                _ValveLinGetCommand
  .text.ValveLinUpdateSignals
-                0x000000000000652c      0x190 obj/AppValve.o
-                0x000000000000652c                _ValveLinUpdateSignals
+                0x00000000000068f0      0x178 obj/AppValve.o
+                0x00000000000068f0                _ValveLinUpdateSignals
  .text.get_valve_mode
-                0x00000000000066bc        0x6 obj/AppValve.o
-                0x00000000000066bc                _get_valve_mode
+                0x0000000000006a68        0x6 obj/AppValve.o
+                0x0000000000006a68                _get_valve_mode
  .text.get_valve_voltage
-                0x00000000000066c2        0x6 obj/AppValve.o
-                0x00000000000066c2                _get_valve_voltage
+                0x0000000000006a6e        0x6 obj/AppValve.o
+                0x0000000000006a6e                _get_valve_voltage
  .text.get_valve_temperature
-                0x00000000000066c8        0x6 obj/AppValve.o
-                0x00000000000066c8                _get_valve_temperature
+                0x0000000000006a74        0x6 obj/AppValve.o
+                0x0000000000006a74                _get_valve_temperature
  .text.get_valve_motCurrent
-                0x00000000000066ce        0x6 obj/AppValve.o
-                0x00000000000066ce                _get_valve_motCurrent
+                0x0000000000006a7a        0x6 obj/AppValve.o
+                0x0000000000006a7a                _get_valve_motCurrent
  .text.AppValveInit
-                0x00000000000066d4      0x126 obj/AppValve.o
-                0x00000000000066d4                _AppValveInit
+                0x0000000000006a80      0x130 obj/AppValve.o
+                0x0000000000006a80                _AppValveInit
  .text.AppValveTask
-                0x00000000000067fa      0xd1a obj/AppValve.o
-                0x00000000000067fa                _AppValveTask
+                0x0000000000006bb0      0xb6e obj/AppValve.o
+                0x0000000000006bb0                _AppValveTask
  .text.adc_DoSoftwareTrigger
-                0x0000000000007514       0x56 obj/adc.o
+                0x000000000000771e       0x56 obj/adc.o
  .text.adc_Init
-                0x000000000000756a       0x4e obj/adc.o
-                0x000000000000756a                _adc_Init
+                0x0000000000007774       0x4e obj/adc.o
+                0x0000000000007774                _adc_Init
  .text.adc_Start
-                0x00000000000075b8       0x5e obj/adc.o
-                0x00000000000075b8                _adc_Start
+                0x00000000000077c2       0x5e obj/adc.o
+                0x00000000000077c2                _adc_Start
  .text.adc_Stop
-                0x0000000000007616       0x42 obj/adc.o
-                0x0000000000007616                _adc_Stop
+                0x0000000000007820       0x42 obj/adc.o
+                0x0000000000007820                _adc_Stop
  .text.adc_Shunt_OffsetCalib
-                0x0000000000007658       0xb0 obj/adc.o
-                0x0000000000007658                _adc_Shunt_OffsetCalib
+                0x0000000000007862       0xb0 obj/adc.o
+                0x0000000000007862                _adc_Shunt_OffsetCalib
  .text.adc_ConvertToCurrent
-                0x0000000000007708        0x2 obj/adc.o
-                0x0000000000007708                _adc_ConvertToCurrent
+                0x0000000000007912        0x2 obj/adc.o
+                0x0000000000007912                _adc_ConvertToCurrent
  .text.adc_ConvertToTchip
-                0x000000000000770a        0x4 obj/adc.o
-                0x000000000000770a                _adc_ConvertToTchip
+                0x0000000000007914        0x4 obj/adc.o
+                0x0000000000007914                _adc_ConvertToTchip
  .text.adc_ConvertToVsupply
-                0x000000000000770e        0xa obj/adc.o
-                0x000000000000770e                _adc_ConvertToVsupply
+                0x0000000000007918        0xa obj/adc.o
+                0x0000000000007918                _adc_ConvertToVsupply
  .text.adc_ConvertToVoltage
-                0x0000000000007718        0x8 obj/adc.o
-                0x0000000000007718                _adc_ConvertToVoltage
+                0x0000000000007922        0x8 obj/adc.o
+                0x0000000000007922                _adc_ConvertToVoltage
  .text._ADC_SAR_INT
-                0x0000000000007720       0x20 obj/adc.o
-                0x0000000000007720                __ADC_SAR_INT
+                0x000000000000792a       0x20 obj/adc.o
+                0x000000000000792a                __ADC_SAR_INT
  .text.gmr_calibration_setup
-                0x0000000000007740       0x40 obj/app_sensor.o
-                0x0000000000007740                _gmr_calibration_setup
+                0x000000000000794a       0x40 obj/app_sensor.o
+                0x000000000000794a                _gmr_calibration_setup
  .text.sensor_init
-                0x0000000000007780       0x4e obj/app_sensor.o
-                0x0000000000007780                _sensor_init
+                0x000000000000798a       0x4e obj/app_sensor.o
+                0x000000000000798a                _sensor_init
  .text.set_gmr_sensor_offset
-                0x00000000000077ce        0x6 obj/app_sensor.o
-                0x00000000000077ce                _set_gmr_sensor_offset
+                0x00000000000079d8        0x6 obj/app_sensor.o
+                0x00000000000079d8                _set_gmr_sensor_offset
  .text.get_gmr_sensor_offset
-                0x00000000000077d4        0x6 obj/app_sensor.o
-                0x00000000000077d4                _get_gmr_sensor_offset
+                0x00000000000079de        0x6 obj/app_sensor.o
+                0x00000000000079de                _get_gmr_sensor_offset
  .text.adc_raw_update
-                0x00000000000077da       0xaa obj/app_sensor.o
-                0x00000000000077da                _adc_raw_update
+                0x00000000000079e4       0xaa obj/app_sensor.o
+                0x00000000000079e4                _adc_raw_update
  .text.get_conv_vdda_voltage
-                0x0000000000007884        0x6 obj/app_sensor.o
-                0x0000000000007884                _get_conv_vdda_voltage
+                0x0000000000007a8e        0x6 obj/app_sensor.o
+                0x0000000000007a8e                _get_conv_vdda_voltage
  .text.get_conv_supply_voltage
-                0x000000000000788a        0x6 obj/app_sensor.o
-                0x000000000000788a                _get_conv_supply_voltage
+                0x0000000000007a94        0x6 obj/app_sensor.o
+                0x0000000000007a94                _get_conv_supply_voltage
  .text.get_conv_ic_temperature
-                0x0000000000007890       0x16 obj/app_sensor.o
-                0x0000000000007890                _get_conv_ic_temperature
+                0x0000000000007a9a       0x16 obj/app_sensor.o
+                0x0000000000007a9a                _get_conv_ic_temperature
  .text.get_conv_mot_current
-                0x00000000000078a6        0x6 obj/app_sensor.o
-                0x00000000000078a6                _get_conv_mot_current
+                0x0000000000007ab0        0x6 obj/app_sensor.o
+                0x0000000000007ab0                _get_conv_mot_current
  .text.get_gmr_sine_output
-                0x00000000000078ac       0x24 obj/app_sensor.o
-                0x00000000000078ac                _get_gmr_sine_output
+                0x0000000000007ab6       0x24 obj/app_sensor.o
+                0x0000000000007ab6                _get_gmr_sine_output
  .text.get_gmr_cosine_output
-                0x00000000000078d0       0x24 obj/app_sensor.o
-                0x00000000000078d0                _get_gmr_cosine_output
+                0x0000000000007ada       0x24 obj/app_sensor.o
+                0x0000000000007ada                _get_gmr_cosine_output
  .text.calculate_gmr_angle
-                0x00000000000078f4       0xb0 obj/app_sensor.o
-                0x00000000000078f4                _calculate_gmr_angle
+                0x0000000000007afe       0xb0 obj/app_sensor.o
+                0x0000000000007afe                _calculate_gmr_angle
  .text.forward_linear_Interpolation
-                0x00000000000079a4       0x24 obj/app_sensor.o
-                0x00000000000079a4                _forward_linear_Interpolation
+                0x0000000000007bae       0x24 obj/app_sensor.o
+                0x0000000000007bae                _forward_linear_Interpolation
  .text.get_conv_ignition_voltage
-                0x00000000000079c8       0x64 obj/app_sensor.o
-                0x00000000000079c8                _get_conv_ignition_voltage
+                0x0000000000007bd2       0x64 obj/app_sensor.o
+                0x0000000000007bd2                _get_conv_ignition_voltage
  .text.conv_clock_error_init
-                0x0000000000007a2c       0x28 obj/conv_clock_error.o
-                0x0000000000007a2c                _conv_clock_error_init
+                0x0000000000007c36       0x28 obj/conv_clock_error.o
+                0x0000000000007c36                _conv_clock_error_init
  .text.conv_clock_error_speed
-                0x0000000000007a54       0x2c obj/conv_clock_error.o
-                0x0000000000007a54                _conv_clock_error_speed
+                0x0000000000007c5e       0x2c obj/conv_clock_error.o
+                0x0000000000007c5e                _conv_clock_error_speed
  .text.conv_clock_error_correct_period
-                0x0000000000007a80        0xc obj/conv_clock_error.o
-                0x0000000000007a80                _conv_clock_error_correct_period
+                0x0000000000007c8a        0xc obj/conv_clock_error.o
+                0x0000000000007c8a                _conv_clock_error_correct_period
  .text.conv_high_voltage_init
-                0x0000000000007a8c       0x32 obj/conv_high_voltage.o
-                0x0000000000007a8c                _conv_high_voltage_init
+                0x0000000000007c96       0x32 obj/conv_high_voltage.o
+                0x0000000000007c96                _conv_high_voltage_init
  .text.conv_high_voltage
-                0x0000000000007abe       0x22 obj/conv_high_voltage.o
-                0x0000000000007abe                _conv_high_voltage
+                0x0000000000007cc8       0x22 obj/conv_high_voltage.o
+                0x0000000000007cc8                _conv_high_voltage
  .text.conv_high_voltage_with_tcorrection
-                0x0000000000007ae0       0x4c obj/conv_high_voltage.o
-                0x0000000000007ae0                _conv_high_voltage_with_tcorrection
+                0x0000000000007cea       0x4c obj/conv_high_voltage.o
+                0x0000000000007cea                _conv_high_voltage_with_tcorrection
  .text.conv_low_voltage_init
-                0x0000000000007b2c       0x32 obj/conv_low_voltage.o
-                0x0000000000007b2c                _conv_low_voltage_init
+                0x0000000000007d36       0x32 obj/conv_low_voltage.o
+                0x0000000000007d36                _conv_low_voltage_init
  .text.conv_motor_voltage_init
-                0x0000000000007b5e       0x6c obj/conv_motor_voltage.o
-                0x0000000000007b5e                _conv_motor_voltage_init
+                0x0000000000007d68       0x6c obj/conv_motor_voltage.o
+                0x0000000000007d68                _conv_motor_voltage_init
  .text.conv_shunt_current_init
-                0x0000000000007bca       0x2a obj/conv_shunt_current.o
-                0x0000000000007bca                _conv_shunt_current_init
+                0x0000000000007dd4       0x2a obj/conv_shunt_current.o
+                0x0000000000007dd4                _conv_shunt_current_init
  .text.conv_shunt_current
-                0x0000000000007bf4       0x22 obj/conv_shunt_current.o
-                0x0000000000007bf4                _conv_shunt_current
+                0x0000000000007dfe       0x22 obj/conv_shunt_current.o
+                0x0000000000007dfe                _conv_shunt_current
  .text.Mot_dirChange_check
-                0x0000000000007c16       0x18 obj/dcm_driver.o
+                0x0000000000007e20       0x18 obj/dcm_driver.o
  .text.MotRequestHardStop
-                0x0000000000007c2e        0x8 obj/dcm_driver.o
-                0x0000000000007c2e                _MotRequestHardStop
+                0x0000000000007e38        0x8 obj/dcm_driver.o
+                0x0000000000007e38                _MotRequestHardStop
  .text.MotClearHardStop
-                0x0000000000007c36        0x8 obj/dcm_driver.o
-                0x0000000000007c36                _MotClearHardStop
+                0x0000000000007e40        0x8 obj/dcm_driver.o
+                0x0000000000007e40                _MotClearHardStop
  .text.MotSetTargetPosition
-                0x0000000000007c3e       0x2e obj/dcm_driver.o
-                0x0000000000007c3e                _MotSetTargetPosition
+                0x0000000000007e48       0x2e obj/dcm_driver.o
+                0x0000000000007e48                _MotSetTargetPosition
  .text.MotGetCurrentPosition
-                0x0000000000007c6c        0x6 obj/dcm_driver.o
-                0x0000000000007c6c                _MotGetCurrentPosition
+                0x0000000000007e76        0x6 obj/dcm_driver.o
+                0x0000000000007e76                _MotGetCurrentPosition
  .text.MotClearStallFlag
-                0x0000000000007c72       0x1e obj/dcm_driver.o
-                0x0000000000007c72                _MotClearStallFlag
+                0x0000000000007e7c       0x1e obj/dcm_driver.o
+                0x0000000000007e7c                _MotClearStallFlag
  .text.MotClearFaultFlag
-                0x0000000000007c90       0x46 obj/dcm_driver.o
-                0x0000000000007c90                _MotClearFaultFlag
+                0x0000000000007e9a       0x46 obj/dcm_driver.o
+                0x0000000000007e9a                _MotClearFaultFlag
  .text.MotGetState
-                0x0000000000007cd6        0x6 obj/dcm_driver.o
-                0x0000000000007cd6                _MotGetState
+                0x0000000000007ee0        0x6 obj/dcm_driver.o
+                0x0000000000007ee0                _MotGetState
  .text.MotGetStallState
-                0x0000000000007cdc        0x8 obj/dcm_driver.o
-                0x0000000000007cdc                _MotGetStallState
+                0x0000000000007ee6        0x8 obj/dcm_driver.o
+                0x0000000000007ee6                _MotGetStallState
  .text.MotGetFaultState
-                0x0000000000007ce4        0x8 obj/dcm_driver.o
-                0x0000000000007ce4                _MotGetFaultState
+                0x0000000000007eee        0x8 obj/dcm_driver.o
+                0x0000000000007eee                _MotGetFaultState
  .text.SensorGetState
-                0x0000000000007cec        0x8 obj/dcm_driver.o
-                0x0000000000007cec                _SensorGetState
+                0x0000000000007ef6        0x8 obj/dcm_driver.o
+                0x0000000000007ef6                _SensorGetState
  .text.app_mot_init
-                0x0000000000007cf4       0xc8 obj/dcm_driver.o
-                0x0000000000007cf4                _app_mot_init
+                0x0000000000007efe       0xc4 obj/dcm_driver.o
+                0x0000000000007efe                _app_mot_init
  .text.app_motor_task
-                0x0000000000007dbc      0x420 obj/dcm_driver.o
-                0x0000000000007dbc                _app_motor_task
+                0x0000000000007fc2      0x44e obj/dcm_driver.o
+                0x0000000000007fc2                _app_motor_task
  .text.motor_ctrl_handler
-                0x00000000000081dc      0x30a obj/dcm_driver.o
-                0x00000000000081dc                _motor_ctrl_handler
+                0x0000000000008410      0x330 obj/dcm_driver.o
+                0x0000000000008410                _motor_ctrl_handler
  .text.diagnostic_Init
-                0x00000000000084e6       0x60 obj/diagnostic.o
-                0x00000000000084e6                _diagnostic_Init
+                0x0000000000008740       0x60 obj/diagnostic.o
+                0x0000000000008740                _diagnostic_Init
  .text.diagnostic_Start
-                0x0000000000008546       0x48 obj/diagnostic.o
-                0x0000000000008546                _diagnostic_Start
+                0x00000000000087a0       0x48 obj/diagnostic.o
+                0x00000000000087a0                _diagnostic_Start
  .text.DIAGNOSTIC_Reset
-                0x000000000000858e       0x2a obj/diagnostic.o
-                0x000000000000858e                _DIAGNOSTIC_Reset
+                0x00000000000087e8       0x2a obj/diagnostic.o
+                0x00000000000087e8                _DIAGNOSTIC_Reset
  .text.diagnostic_IsUVPending
-                0x00000000000085b8        0xa obj/diagnostic.o
-                0x00000000000085b8                _diagnostic_IsUVPending
+                0x0000000000008812        0xa obj/diagnostic.o
+                0x0000000000008812                _diagnostic_IsUVPending
  .text.diagnostic_IsOVPending
-                0x00000000000085c2        0xa obj/diagnostic.o
-                0x00000000000085c2                _diagnostic_IsOVPending
+                0x000000000000881c        0xa obj/diagnostic.o
+                0x000000000000881c                _diagnostic_IsOVPending
  .text.diagnostic_IsOVTPending
-                0x00000000000085cc        0x8 obj/diagnostic.o
-                0x00000000000085cc                _diagnostic_IsOVTPending
+                0x0000000000008826        0x8 obj/diagnostic.o
+                0x0000000000008826                _diagnostic_IsOVTPending
  .text.diagnostic_IsVDSPending
-                0x00000000000085d4       0x1a obj/diagnostic.o
-                0x00000000000085d4                _diagnostic_IsVDSPending
+                0x000000000000882e       0x1a obj/diagnostic.o
+                0x000000000000882e                _diagnostic_IsVDSPending
  .text._UV_VS_INT
-                0x00000000000085ee       0x22 obj/diagnostic.o
-                0x00000000000085ee                __UV_VS_INT
+                0x0000000000008848       0x22 obj/diagnostic.o
+                0x0000000000008848                __UV_VS_INT
  .text._OV_VS_INT
-                0x0000000000008610       0x12 obj/diagnostic.o
-                0x0000000000008610                __OV_VS_INT
+                0x000000000000886a       0x12 obj/diagnostic.o
+                0x000000000000886a                __OV_VS_INT
  .text._OVT_INT
-                0x0000000000008622       0x12 obj/diagnostic.o
-                0x0000000000008622                __OVT_INT
+                0x000000000000887c       0x12 obj/diagnostic.o
+                0x000000000000887c                __OVT_INT
  .text._OVC_INT
-                0x0000000000008634       0x12 obj/diagnostic.o
-                0x0000000000008634                __OVC_INT
+                0x000000000000888e       0x12 obj/diagnostic.o
+                0x000000000000888e                __OVC_INT
  .text.eeprom_Init
-                0x0000000000008646       0x1e obj/eeprom_app.o
-                0x0000000000008646                _eeprom_Init
+                0x00000000000088a0       0x1e obj/eeprom_app.o
+                0x00000000000088a0                _eeprom_Init
  .text.eeprom_ReadLINconfig
-                0x0000000000008664       0x10 obj/eeprom_app.o
-                0x0000000000008664                _eeprom_ReadLINconfig
+                0x00000000000088be       0x10 obj/eeprom_app.o
+                0x00000000000088be                _eeprom_ReadLINconfig
  .text.eeprom_ReadValveConfig
-                0x0000000000008674       0x58 obj/eeprom_app.o
-                0x0000000000008674                _eeprom_ReadValveConfig
+                0x00000000000088ce       0x58 obj/eeprom_app.o
+                0x00000000000088ce                _eeprom_ReadValveConfig
  .text.eeprom_WriteValveConfig
-                0x00000000000086cc       0x2a obj/eeprom_app.o
-                0x00000000000086cc                _eeprom_WriteValveConfig
+                0x0000000000008926       0x2a obj/eeprom_app.o
+                0x0000000000008926                _eeprom_WriteValveConfig
  .text.eeprom_ReadDiagConfig
-                0x00000000000086f6       0x58 obj/eeprom_app.o
-                0x00000000000086f6                _eeprom_ReadDiagConfig
+                0x0000000000008950       0x58 obj/eeprom_app.o
+                0x0000000000008950                _eeprom_ReadDiagConfig
  .text.eeprom_WriteDiagConfig
-                0x000000000000874e       0x2a obj/eeprom_app.o
-                0x000000000000874e                _eeprom_WriteDiagConfig
+                0x00000000000089a8       0x2a obj/eeprom_app.o
+                0x00000000000089a8                _eeprom_WriteDiagConfig
  .text.valve_gmr_write
-                0x0000000000008778       0x1c obj/eeprom_app.o
-                0x0000000000008778                _valve_gmr_write
+                0x00000000000089d2       0x1c obj/eeprom_app.o
+                0x00000000000089d2                _valve_gmr_write
  .text.valve_diag_write
-                0x0000000000008794       0x1c obj/eeprom_app.o
-                0x0000000000008794                _valve_diag_write
+                0x00000000000089ee       0x1c obj/eeprom_app.o
+                0x00000000000089ee                _valve_diag_write
  .text.FILTER_AVG_CalcMovAvg
-                0x00000000000087b0       0x58 obj/filter_avg.o
-                0x00000000000087b0                _FILTER_AVG_CalcMovAvg
+                0x0000000000008a0a       0x58 obj/filter_avg.o
+                0x0000000000008a0a                _FILTER_AVG_CalcMovAvg
  .text.Generic_INT
-                0x0000000000008808        0xc obj/fw_ints.o
-                0x0000000000008808                __OV_LS_VDS2_INT
-                0x0000000000008808                __OV_HS_VDS0_INT
-                0x0000000000008808                __CTIMER1_3_INT
-                0x0000000000008808                __AWD_ATT_INT
-                0x0000000000008808                __IO_IN6_INT
-                0x0000000000008808                __IO_IN3_INT
-                0x0000000000008808                __OV_HS_VDS1_INT
-                0x0000000000008808                __IO_IN7_INT
-                0x0000000000008808                __PPM_TX_INT
-                0x0000000000008808                __PWM_SLAVE1_CMP_INT
-                0x0000000000008808                __EE_COMPLETE_INT
-                0x0000000000008808                __SPI_TE_INT
-                0x0000000000008808                __CTIMER0_2_INT
-                0x0000000000008808                __PWM_MASTER2_CMP_INT
-                0x0000000000008808                __IO_IN5_INT
-                0x0000000000008808                __TX_TIMEOUT_INT
-                0x0000000000008808                __CTIMER1_2_INT
-                0x0000000000008808                __IO_IN2_INT
-                0x0000000000008808                _Generic_INT
-                0x0000000000008808                __PPM_ERR_INT
-                0x0000000000008808                __UART_TS_INT
-                0x0000000000008808                __MLX16_EXCHG_INT
-                0x0000000000008808                __OV_HS_VDS3_INT
-                0x0000000000008808                __COLIN_OWNMTX_INT
-                0x0000000000008808                __IO_IN1_INT
-                0x0000000000008808                __OV_LS_VDS0_INT
-                0x0000000000008808                __ANA_PLL_ERR_INT
-                0x0000000000008808                __PWM_MASTER2_END_INT
-                0x0000000000008808                __UART_RR_INT
-                0x0000000000008808                __PWM_SLAVE3_CMP_INT
-                0x0000000000008808                __CTIMER0_1_INT
-                0x0000000000008808                __OV_LS_VDS1_INT
-                0x0000000000008808                __UDTF_INT
-                0x0000000000008808                __SPI_ER_INT
-                0x0000000000008808                __MLX16_SOFT_INT
-                0x0000000000008808                __UART_TR_INT
-                0x0000000000008808                __UV_VDDAF_INT
-                0x0000000000008808                __PPM_RX_INT
-                0x0000000000008808                __UART_TE_INT
-                0x0000000000008808                __OV_LS_VDS3_INT
-                0x0000000000008808                __IWD_ATT_INT
-                0x0000000000008808                __PWM_MASTER1_CMP_INT
-                0x0000000000008808                __FL_COMPLETE_INT
-                0x0000000000008808                __SPI_RF_INT
-                0x0000000000008808                __EE_ECC_INT
-                0x0000000000008808                __UV_VDDA_INT
-                0x0000000000008808                __UART_RS_INT
-                0x0000000000008808                __IO_IN4_INT
-                0x0000000000008808                __MLX16_DMAERR_INT
-                0x0000000000008808                __OV_HS_VDS2_INT
-                0x0000000000008808                __CTIMER1_1_INT
-                0x0000000000008808                __I2C_GLOBAL_RESET_INT
-                0x0000000000008808                __UART_SB_INT
-                0x0000000000008808                __IO_IN0_INT
-                0x0000000000008808                __FL_ECC_INT
+                0x0000000000008a62        0xc obj/fw_ints.o
+                0x0000000000008a62                __OV_LS_VDS2_INT
+                0x0000000000008a62                __OV_HS_VDS0_INT
+                0x0000000000008a62                __CTIMER1_3_INT
+                0x0000000000008a62                __AWD_ATT_INT
+                0x0000000000008a62                __IO_IN6_INT
+                0x0000000000008a62                __IO_IN3_INT
+                0x0000000000008a62                __OV_HS_VDS1_INT
+                0x0000000000008a62                __IO_IN7_INT
+                0x0000000000008a62                __PPM_TX_INT
+                0x0000000000008a62                __PWM_SLAVE1_CMP_INT
+                0x0000000000008a62                __EE_COMPLETE_INT
+                0x0000000000008a62                __SPI_TE_INT
+                0x0000000000008a62                __CTIMER0_2_INT
+                0x0000000000008a62                __PWM_MASTER2_CMP_INT
+                0x0000000000008a62                __IO_IN5_INT
+                0x0000000000008a62                __TX_TIMEOUT_INT
+                0x0000000000008a62                __CTIMER1_2_INT
+                0x0000000000008a62                __IO_IN2_INT
+                0x0000000000008a62                _Generic_INT
+                0x0000000000008a62                __PPM_ERR_INT
+                0x0000000000008a62                __UART_TS_INT
+                0x0000000000008a62                __MLX16_EXCHG_INT
+                0x0000000000008a62                __OV_HS_VDS3_INT
+                0x0000000000008a62                __COLIN_OWNMTX_INT
+                0x0000000000008a62                __IO_IN1_INT
+                0x0000000000008a62                __OV_LS_VDS0_INT
+                0x0000000000008a62                __ANA_PLL_ERR_INT
+                0x0000000000008a62                __PWM_MASTER2_END_INT
+                0x0000000000008a62                __UART_RR_INT
+                0x0000000000008a62                __PWM_SLAVE3_CMP_INT
+                0x0000000000008a62                __CTIMER0_1_INT
+                0x0000000000008a62                __OV_LS_VDS1_INT
+                0x0000000000008a62                __UDTF_INT
+                0x0000000000008a62                __SPI_ER_INT
+                0x0000000000008a62                __MLX16_SOFT_INT
+                0x0000000000008a62                __UART_TR_INT
+                0x0000000000008a62                __UV_VDDAF_INT
+                0x0000000000008a62                __PPM_RX_INT
+                0x0000000000008a62                __UART_TE_INT
+                0x0000000000008a62                __OV_LS_VDS3_INT
+                0x0000000000008a62                __IWD_ATT_INT
+                0x0000000000008a62                __PWM_MASTER1_CMP_INT
+                0x0000000000008a62                __FL_COMPLETE_INT
+                0x0000000000008a62                __SPI_RF_INT
+                0x0000000000008a62                __EE_ECC_INT
+                0x0000000000008a62                __UV_VDDA_INT
+                0x0000000000008a62                __UART_RS_INT
+                0x0000000000008a62                __IO_IN4_INT
+                0x0000000000008a62                __MLX16_DMAERR_INT
+                0x0000000000008a62                __OV_HS_VDS2_INT
+                0x0000000000008a62                __CTIMER1_1_INT
+                0x0000000000008a62                __I2C_GLOBAL_RESET_INT
+                0x0000000000008a62                __UART_SB_INT
+                0x0000000000008a62                __IO_IN0_INT
+                0x0000000000008a62                __FL_ECC_INT
  .text.fw_mls_ErrorDetected
-                0x0000000000008814       0x50 obj/fw_mls_api.o
-                0x0000000000008814                _fw_mls_ErrorDetected
+                0x0000000000008a6e       0x50 obj/fw_mls_api.o
+                0x0000000000008a6e                _fw_mls_ErrorDetected
  .text.fw_mls_Init
-                0x0000000000008864       0x6c obj/fw_mls_api.o
-                0x0000000000008864                _fw_mls_Init
+                0x0000000000008abe       0x6c obj/fw_mls_api.o
+                0x0000000000008abe                _fw_mls_Init
  .text.fw_mls_TransportLayerInit
-                0x00000000000088d0       0x28 obj/fw_mls_api.o
-                0x00000000000088d0                _fw_mls_TransportLayerInit
+                0x0000000000008b2a       0x28 obj/fw_mls_api.o
+                0x0000000000008b2a                _fw_mls_TransportLayerInit
  .text._COLIN_LIN_INT
-                0x00000000000088f8       0x18 obj/fw_mls_api.o
-                0x00000000000088f8                __COLIN_LIN_INT
+                0x0000000000008b52       0x18 obj/fw_mls_api.o
+                0x0000000000008b52                __COLIN_LIN_INT
  .text.fw_lepm_ResponseTransmitted
-                0x0000000000008910       0x16 obj/fw_mls_device_id.o
+                0x0000000000008b6a       0x16 obj/fw_mls_device_id.o
  .text.fw_lepm_Init
-                0x0000000000008926       0x20 obj/fw_mls_device_id.o
-                0x0000000000008926                _fw_lepm_Init
+                0x0000000000008b80       0x20 obj/fw_mls_device_id.o
+                0x0000000000008b80                _fw_lepm_Init
  .text.fw_lepm_Request
-                0x0000000000008946      0x14a obj/fw_mls_device_id.o
+                0x0000000000008ba0      0x14a obj/fw_mls_device_id.o
  .text.fw_low_level_init
-                0x0000000000008a90       0xdc obj/fw_premain.o
-                0x0000000000008a90                _fw_low_level_init
+                0x0000000000008cea       0xdc obj/fw_premain.o
+                0x0000000000008cea                _fw_low_level_init
  .text.fw_premain
-                0x0000000000008b6c       0x1a obj/fw_premain.o
-                0x0000000000008b6c                _fw_premain
+                0x0000000000008dc6       0x1a obj/fw_premain.o
+                0x0000000000008dc6                _fw_premain
  .text.fw_ram_section_init
-                0x0000000000008b86       0x8a obj/fw_ram_section_init.o
-                0x0000000000008b86                _fw_ram_section_init
+                0x0000000000008de0       0x8a obj/fw_ram_section_init.o
+                0x0000000000008de0                _fw_ram_section_init
  .text.fw_start
-                0x0000000000008c10       0x3a obj/fw_startup.o
-                0x0000000000008c10                _fw_start
+                0x0000000000008e6a       0x3a obj/fw_startup.o
+                0x0000000000008e6a                _fw_start
  .text.ld_AppDiagRequest
-                0x0000000000008c4a        0x4 obj/lin22.o
-                0x0000000000008c4a                _ld_AppDiagRequest
+                0x0000000000008ea4        0x4 obj/lin22.o
+                0x0000000000008ea4                _ld_AppDiagRequest
  .text.lin22_Init
-                0x0000000000008c4e       0x92 obj/lin22.o
-                0x0000000000008c4e                _lin22_Init
+                0x0000000000008ea8       0x92 obj/lin22.o
+                0x0000000000008ea8                _lin22_Init
  .text.lin22_CheckColin
-                0x0000000000008ce0       0x56 obj/lin22.o
-                0x0000000000008ce0                _lin22_CheckColin
+                0x0000000000008f3a       0x56 obj/lin22.o
+                0x0000000000008f3a                _lin22_CheckColin
  .text.lin22_BackgroundHandler
-                0x0000000000008d36       0x3c obj/lin22.o
-                0x0000000000008d36                _lin22_BackgroundHandler
+                0x0000000000008f90       0x3c obj/lin22.o
+                0x0000000000008f90                _lin22_BackgroundHandler
  .text.ld_serial_number_callout
-                0x0000000000008d72       0x18 obj/lin22.o
-                0x0000000000008d72                _ld_serial_number_callout
+                0x0000000000008fcc       0x18 obj/lin22.o
+                0x0000000000008fcc                _ld_serial_number_callout
  .text.fw_lepm_ApplicationStop
-                0x0000000000008d8a       0x10 obj/lin22.o
-                0x0000000000008d8a                _fw_lepm_ApplicationStop
+                0x0000000000008fe4       0x10 obj/lin22.o
+                0x0000000000008fe4                _fw_lepm_ApplicationStop
  .text.lin22_GotoSleep
-                0x0000000000008d9a       0x5a obj/lin22.o
-                0x0000000000008d9a                _lin22_GotoSleep
+                0x0000000000008ff4       0x5a obj/lin22.o
+                0x0000000000008ff4                _lin22_GotoSleep
  .text.ld_read_by_id_callout
-                0x0000000000008df4       0x94 obj/lin22.o
-                0x0000000000008df4                _ld_read_by_id_callout
+                0x000000000000904e       0x94 obj/lin22.o
+                0x000000000000904e                _ld_read_by_id_callout
  .text.l_ifc_sleep_entered_callout
-                0x0000000000008e88       0x18 obj/lin22.o
-                0x0000000000008e88                _l_ifc_sleep_entered_callout
+                0x00000000000090e2       0x18 obj/lin22.o
+                0x00000000000090e2                _l_ifc_sleep_entered_callout
  .text.l_mls_Init
-                0x0000000000008ea0       0x90 obj/lin_api_config.o
-                0x0000000000008ea0                _l_mls_Init
+                0x00000000000090fa       0x90 obj/lin_api_config.o
+                0x00000000000090fa                _l_mls_Init
  .text.l_sys_irq_disable
-                0x0000000000008f30       0x10 obj/lin_api_config.o
-                0x0000000000008f30                _l_sys_irq_disable
+                0x000000000000918a       0x10 obj/lin_api_config.o
+                0x000000000000918a                _l_sys_irq_disable
  .text.l_sys_irq_restore
-                0x0000000000008f40        0x4 obj/lin_api_config.o
-                0x0000000000008f40                _l_sys_irq_restore
+                0x000000000000919a        0x4 obj/lin_api_config.o
+                0x000000000000919a                _l_sys_irq_restore
  .text.ld_DiagInit
-                0x0000000000008f44       0x12 obj/lin_cfg_sl.o
-                0x0000000000008f44                _ld_DiagInit
+                0x000000000000919e       0x12 obj/lin_cfg_sl.o
+                0x000000000000919e                _ld_DiagInit
  .text.ld_GetLINNAD
-                0x0000000000008f56       0x18 obj/lin_cfg_sl.o
-                0x0000000000008f56                _ld_GetLINNAD
+                0x00000000000091b0       0x18 obj/lin_cfg_sl.o
+                0x00000000000091b0                _ld_GetLINNAD
  .text.isSupplierIdValid
-                0x0000000000008f6e       0x1e obj/lin_cfg_sl.o
-                0x0000000000008f6e                _isSupplierIdValid
+                0x00000000000091c8       0x1e obj/lin_cfg_sl.o
+                0x00000000000091c8                _isSupplierIdValid
  .text.isFunctionIdValid
-                0x0000000000008f8c       0x1c obj/lin_cfg_sl.o
-                0x0000000000008f8c                _isFunctionIdValid
+                0x00000000000091e6       0x1c obj/lin_cfg_sl.o
+                0x00000000000091e6                _isFunctionIdValid
  .text.ld_DiagRequest
-                0x0000000000008fa8      0x22e obj/lin_cfg_sl.o
-                0x0000000000008fa8                _ld_DiagRequest
+                0x0000000000009202      0x22e obj/lin_cfg_sl.o
+                0x0000000000009202                _ld_DiagRequest
  .text.l_sys_init
-                0x00000000000091d6        0x4 obj/lin_core.o
-                0x00000000000091d6                _l_sys_init
+                0x0000000000009430        0x4 obj/lin_core.o
+                0x0000000000009430                _l_sys_init
  .text.l_SetFlagsMask
-                0x00000000000091da       0x2c obj/lin_core.o
-                0x00000000000091da                _l_SetFlagsMask
+                0x0000000000009434       0x2c obj/lin_core.o
+                0x0000000000009434                _l_SetFlagsMask
  .text.l_ifcUpdateOverrun
-                0x0000000000009206       0x22 obj/lin_core_sl.o
+                0x0000000000009460       0x22 obj/lin_core_sl.o
  .text.l_ifc_init_sl1
-                0x0000000000009228       0x14 obj/lin_core_sl.o
-                0x0000000000009228                _l_ifc_init_sl1
+                0x0000000000009482       0x14 obj/lin_core_sl.o
+                0x0000000000009482                _l_ifc_init_sl1
  .text.l_ifc_read_status_sl1
-                0x000000000000923c       0x3c obj/lin_core_sl.o
-                0x000000000000923c                _l_ifc_read_status_sl1
+                0x0000000000009496       0x3c obj/lin_core_sl.o
+                0x0000000000009496                _l_ifc_read_status_sl1
  .text.l_LinSleepMode
-                0x0000000000009278       0x1a obj/lin_core_sl.o
-                0x0000000000009278                _l_LinSleepMode
+                0x00000000000094d2       0x1a obj/lin_core_sl.o
+                0x00000000000094d2                _l_LinSleepMode
  .text.l_MessageReceived
-                0x0000000000009292       0x3e obj/lin_core_sl.o
-                0x0000000000009292                _l_MessageReceived
+                0x00000000000094ec       0x3e obj/lin_core_sl.o
+                0x00000000000094ec                _l_MessageReceived
  .text.l_DataRequest
-                0x00000000000092d0       0x38 obj/lin_core_sl.o
-                0x00000000000092d0                _l_DataRequest
+                0x000000000000952a       0x38 obj/lin_core_sl.o
+                0x000000000000952a                _l_DataRequest
  .text.l_ErrorDetected
-                0x0000000000009308       0x3e obj/lin_core_sl.o
-                0x0000000000009308                _l_ErrorDetected
+                0x0000000000009562       0x3e obj/lin_core_sl.o
+                0x0000000000009562                _l_ErrorDetected
  .text.l_DataTransmitted
-                0x0000000000009346       0x36 obj/lin_core_sl.o
-                0x0000000000009346                _l_DataTransmitted
+                0x00000000000095a0       0x36 obj/lin_core_sl.o
+                0x00000000000095a0                _l_DataTransmitted
  .text.l_AutoAddressingStep
-                0x000000000000937c        0x2 obj/lin_core_sl.o
-                0x000000000000937c                _l_AutoAddressingStep
+                0x00000000000095d6        0x2 obj/lin_core_sl.o
+                0x00000000000095d6                _l_AutoAddressingStep
  .text.l_FillBufferSlave
-                0x000000000000937e       0x2c obj/lin_core_sl.o
-                0x000000000000937e                _l_FillBufferSlave
+                0x00000000000095d8       0x2c obj/lin_core_sl.o
+                0x00000000000095d8                _l_FillBufferSlave
  .text.l_sl1_Debug_Frame_handler
-                0x00000000000093aa       0x5c obj/lin_signals.o
+                0x0000000000009604       0x5c obj/lin_signals.o
  .text.l_sl1_VPC_Fwv_Ctrl_handler
-                0x0000000000009406       0x5e obj/lin_signals.o
+                0x0000000000009660       0x5e obj/lin_signals.o
  .text.l_sl1_VPC_Fwv_Resp_handler
-                0x0000000000009464      0x1d2 obj/lin_signals.o
+                0x00000000000096be      0x1d2 obj/lin_signals.o
  .text.globalVariableInit
-                0x0000000000009636       0x82 obj/main.o
-                0x0000000000009636                _globalVariableInit
+                0x0000000000009890       0x82 obj/main.o
+                0x0000000000009890                _globalVariableInit
  .text.system_timer_ISR
-                0x00000000000096b8       0x36 obj/main.o
-                0x00000000000096b8                _system_timer_ISR
+                0x0000000000009912       0x68 obj/main.o
+                0x0000000000009912                _system_timer_ISR
  .text.startup.main
-                0x00000000000096ee      0x138 obj/main.o
-                0x00000000000096ee                _main
+                0x000000000000997a      0x138 obj/main.o
+                0x000000000000997a                _main
  .text.EVENT_UnderVoltage
-                0x0000000000009826        0x8 obj/main.o
-                0x0000000000009826                _EVENT_UnderVoltage
+                0x0000000000009ab2        0x8 obj/main.o
+                0x0000000000009ab2                _EVENT_UnderVoltage
  .text.EVENT_GotoSleep
-                0x000000000000982e        0x8 obj/main.o
-                0x000000000000982e                _EVENT_GotoSleep
+                0x0000000000009aba        0x8 obj/main.o
+                0x0000000000009aba                _EVENT_GotoSleep
  .text.protection_Init
-                0x0000000000009836       0x38 obj/protection.o
-                0x0000000000009836                _protection_Init
+                0x0000000000009ac2       0x38 obj/protection.o
+                0x0000000000009ac2                _protection_Init
  .text.protection_CheckShort
-                0x000000000000986e       0x10 obj/protection.o
-                0x000000000000986e                _protection_CheckShort
+                0x0000000000009afa       0x10 obj/protection.o
+                0x0000000000009afa                _protection_CheckShort
  .text.protection_CheckSupplyMotorVoltage
-                0x000000000000987e       0x6a obj/protection.o
-                0x000000000000987e                _protection_CheckSupplyMotorVoltage
+                0x0000000000009b0a       0x6a obj/protection.o
+                0x0000000000009b0a                _protection_CheckSupplyMotorVoltage
  .text.protection_CheckChipTemperature
-                0x00000000000098e8       0x38 obj/protection.o
-                0x00000000000098e8                _protection_CheckChipTemperature
+                0x0000000000009b74       0x38 obj/protection.o
+                0x0000000000009b74                _protection_CheckChipTemperature
  .text.protection_Task
-                0x0000000000009920        0x6 obj/protection.o
-                0x0000000000009920                _protection_Task
+                0x0000000000009bac        0x6 obj/protection.o
+                0x0000000000009bac                _protection_Task
  .text.pwm_Init
-                0x0000000000009926      0x132 obj/pwm.o
-                0x0000000000009926                _pwm_Init
+                0x0000000000009bb2      0x132 obj/pwm.o
+                0x0000000000009bb2                _pwm_Init
  .text.pwm_SetDutyCycle
-                0x0000000000009a58       0x42 obj/pwm.o
-                0x0000000000009a58                _pwm_SetDutyCycle
+                0x0000000000009ce4       0x42 obj/pwm.o
+                0x0000000000009ce4                _pwm_SetDutyCycle
  .text.pwm_Start
-                0x0000000000009a9a       0x12 obj/pwm.o
-                0x0000000000009a9a                _pwm_Start
+                0x0000000000009d26       0x12 obj/pwm.o
+                0x0000000000009d26                _pwm_Start
  .text.pwm_Stop
-                0x0000000000009aac       0x20 obj/pwm.o
-                0x0000000000009aac                _pwm_Stop
- .text.pwm_Off  0x0000000000009acc       0x20 obj/pwm.o
-                0x0000000000009acc                _pwm_Off
+                0x0000000000009d38       0x20 obj/pwm.o
+                0x0000000000009d38                _pwm_Stop
+ .text.pwm_Off  0x0000000000009d58       0x20 obj/pwm.o
+                0x0000000000009d58                _pwm_Off
  .text.pwm_Disable
-                0x0000000000009aec       0x54 obj/pwm.o
-                0x0000000000009aec                _pwm_Disable
+                0x0000000000009d78       0x54 obj/pwm.o
+                0x0000000000009d78                _pwm_Disable
  .text._PWM_MASTER1_END_INT
-                0x0000000000009b40       0x2c obj/pwm.o
-                0x0000000000009b40                __PWM_MASTER1_END_INT
+                0x0000000000009dcc       0x2c obj/pwm.o
+                0x0000000000009dcc                __PWM_MASTER1_END_INT
  .text._PWM_SLAVE2_CMP_INT
-                0x0000000000009b6c        0x4 obj/pwm.o
-                0x0000000000009b6c                __PWM_SLAVE2_CMP_INT
+                0x0000000000009df8        0x4 obj/pwm.o
+                0x0000000000009df8                __PWM_SLAVE2_CMP_INT
  .text._DIAG_INT
-                0x0000000000009b70       0x24 obj/pwm.o
-                0x0000000000009b70                __DIAG_INT
+                0x0000000000009dfc       0x24 obj/pwm.o
+                0x0000000000009dfc                __DIAG_INT
  .text.swtimer_init
-                0x0000000000009b94       0x3a obj/swtimer.o
-                0x0000000000009b94                _swtimer_init
+                0x0000000000009e20       0x3a obj/swtimer.o
+                0x0000000000009e20                _swtimer_init
  .text.swtimer_deinit
-                0x0000000000009bce       0x18 obj/swtimer.o
-                0x0000000000009bce                _swtimer_deinit
+                0x0000000000009e5a       0x18 obj/swtimer.o
+                0x0000000000009e5a                _swtimer_deinit
  .text.swtimer_calibrate
-                0x0000000000009be6       0x18 obj/swtimer.o
-                0x0000000000009be6                _swtimer_calibrate
+                0x0000000000009e72       0x18 obj/swtimer.o
+                0x0000000000009e72                _swtimer_calibrate
  .text.swtimer_register
-                0x0000000000009bfe       0x2c obj/swtimer.o
-                0x0000000000009bfe                _swtimer_register
+                0x0000000000009e8a       0x2c obj/swtimer.o
+                0x0000000000009e8a                _swtimer_register
  .text.swtimer_start
-                0x0000000000009c2a       0x22 obj/swtimer.o
-                0x0000000000009c2a                _swtimer_start
+                0x0000000000009eb6       0x22 obj/swtimer.o
+                0x0000000000009eb6                _swtimer_start
  .text.swtimer_isTriggered
-                0x0000000000009c4c       0x30 obj/swtimer.o
-                0x0000000000009c4c                _swtimer_isTriggered
+                0x0000000000009ed8       0x30 obj/swtimer.o
+                0x0000000000009ed8                _swtimer_isTriggered
  .text.swtimer_enterIrq
-                0x0000000000009c7c        0x2 obj/swtimer.o
-                0x0000000000009c7c                _swtimer_enterIrq
+                0x0000000000009f08        0x2 obj/swtimer.o
+                0x0000000000009f08                _swtimer_enterIrq
  .text.swtimer_exitIrq
-                0x0000000000009c7e        0x2 obj/swtimer.o
-                0x0000000000009c7e                _swtimer_exitIrq
+                0x0000000000009f0a        0x2 obj/swtimer.o
+                0x0000000000009f0a                _swtimer_exitIrq
  .text.swtimer_triggerIrq
-                0x0000000000009c80        0x2 obj/swtimer.o
-                0x0000000000009c80                _swtimer_triggerIrq
+                0x0000000000009f0c        0x2 obj/swtimer.o
+                0x0000000000009f0c                _swtimer_triggerIrq
  .text._STIMER_INT
-                0x0000000000009c82       0x8c obj/swtimer.o
-                0x0000000000009c82                __STIMER_INT
+                0x0000000000009f0e       0x8c obj/swtimer.o
+                0x0000000000009f0e                __STIMER_INT
  .text._CTIMER0_3_INT
-                0x0000000000009d0e       0x16 obj/systimer.o
-                0x0000000000009d0e                __CTIMER0_3_INT
+                0x0000000000009f9a       0x16 obj/systimer.o
+                0x0000000000009f9a                __CTIMER0_3_INT
  .text.ctimer0_init
-                0x0000000000009d24       0x34 obj/systimer.o
-                0x0000000000009d24                _ctimer0_init
+                0x0000000000009fb0       0x34 obj/systimer.o
+                0x0000000000009fb0                _ctimer0_init
  .text.ctimer0_start
-                0x0000000000009d58        0xe obj/systimer.o
-                0x0000000000009d58                _ctimer0_start
+                0x0000000000009fe4        0xe obj/systimer.o
+                0x0000000000009fe4                _ctimer0_start
  .text.uart_Start
-                0x0000000000009d66       0x20 obj/uart_plot.o
+                0x0000000000009ff2       0x20 obj/uart_plot.o
  .text.uart_Stop
-                0x0000000000009d86       0x16 obj/uart_plot.o
+                0x000000000000a012       0x16 obj/uart_plot.o
  .text._UDFR_INT
-                0x0000000000009d9c       0xb2 obj/uart_plot.o
-                0x0000000000009d9c                __UDFR_INT
+                0x000000000000a028       0xb2 obj/uart_plot.o
+                0x000000000000a028                __UDFR_INT
  .text._updateCRC8
-                0x0000000000009e4e       0x1c obj/unirom.o
+                0x000000000000a0da       0x1c obj/unirom.o
  .text.unirom_Init
-                0x0000000000009e6a        0x2 obj/unirom.o
-                0x0000000000009e6a                _unirom_Init
+                0x000000000000a0f6        0x2 obj/unirom.o
+                0x000000000000a0f6                _unirom_Init
  .text.unirom_LoadUserConfig
-                0x0000000000009e6c       0x5e obj/unirom.o
-                0x0000000000009e6c                _unirom_LoadUserConfig
+                0x000000000000a0f8       0x5e obj/unirom.o
+                0x000000000000a0f8                _unirom_LoadUserConfig
  .text.unirom_StoreUserConfig
-                0x0000000000009eca       0x5c obj/unirom.o
-                0x0000000000009eca                _unirom_StoreUserConfig
+                0x000000000000a156       0x5c obj/unirom.o
+                0x000000000000a156                _unirom_StoreUserConfig
  .text.unirom_ResetUserConfig
-                0x0000000000009f26       0x2a obj/unirom.o
-                0x0000000000009f26                _unirom_ResetUserConfig
+                0x000000000000a1b2       0x2a obj/unirom.o
+                0x000000000000a1b2                _unirom_ResetUserConfig
  .text.unirom_StorePage
-                0x0000000000009f50       0x48 obj/unirom.o
-                0x0000000000009f50                _unirom_StorePage
+                0x000000000000a1dc       0x48 obj/unirom.o
+                0x000000000000a1dc                _unirom_StorePage
  .text.unirom_WritePage
-                0x0000000000009f98       0x74 obj/unirom.o
-                0x0000000000009f98                _unirom_WritePage
+                0x000000000000a224       0x74 obj/unirom.o
+                0x000000000000a224                _unirom_WritePage
  .text.unirom_ReadPage
-                0x000000000000a00c       0x4e obj/unirom.o
-                0x000000000000a00c                _unirom_ReadPage
+                0x000000000000a298       0x4e obj/unirom.o
+                0x000000000000a298                _unirom_ReadPage
  .text.CalculateTemperature3pLinearize
-                0x000000000000a05a       0x46 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(lib_calculate_temperature.o)
-                0x000000000000a05a                _CalculateTemperature3pLinearize
+                0x000000000000a2e6       0x46 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(lib_calculate_temperature.o)
+                0x000000000000a2e6                _CalculateTemperature3pLinearize
  .text.SetSystemSpeed
-                0x000000000000a0a0       0x82 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(lib_clock.o)
-                0x000000000000a0a0                _SetSystemSpeed
+                0x000000000000a32c       0x82 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(lib_clock.o)
+                0x000000000000a32c                _SetSystemSpeed
  .text.EEPROM_BusyChecks
-                0x000000000000a122       0x24 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(eeprom_drv.o)
+                0x000000000000a3ae       0x24 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(eeprom_drv.o)
  .text.EEPROM_WriteWord64_blocking
-                0x000000000000a146       0x2e ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(eeprom_drv.o)
-                0x000000000000a146                _EEPROM_WriteWord64_blocking
+                0x000000000000a3d2       0x2e ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(eeprom_drv.o)
+                0x000000000000a3d2                _EEPROM_WriteWord64_blocking
  .text.VERSION_getFwAppVersion
-                0x000000000000a174        0xe ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(fwversion.o)
-                0x000000000000a174                _VERSION_getFwAppVersion
+                0x000000000000a400        0xe ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(fwversion.o)
+                0x000000000000a400                _VERSION_getFwAppVersion
  .text.atan2_helper
-                0x000000000000a182       0x28 ../../code/camcu_platform/config/../lib/81332B02\libmath.a(atan.o)
+                0x000000000000a40e       0x28 ../../code/camcu_platform/config/../lib/81332B02\libmath.a(atan.o)
  .text.atan2_lookup
-                0x000000000000a1aa       0x30 ../../code/camcu_platform/config/../lib/81332B02\libmath.a(atan.o)
+                0x000000000000a436       0x30 ../../code/camcu_platform/config/../lib/81332B02\libmath.a(atan.o)
  .text.atan2I16
-                0x000000000000a1da       0x32 ../../code/camcu_platform/config/../lib/81332B02\libmath.a(atan.o)
-                0x000000000000a1da                _atan2I16
+                0x000000000000a466       0x32 ../../code/camcu_platform/config/../lib/81332B02\libmath.a(atan.o)
+                0x000000000000a466                _atan2I16
  .text.ldt_Tick
-                0x000000000000a20c       0x6c ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_diag_transfer.o)
-                0x000000000000a20c                _ldt_Tick
+                0x000000000000a498       0x6c ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_diag_transfer.o)
+                0x000000000000a498                _ldt_Tick
  .text.ml_GetProtectedID
-                0x000000000000a278        0x8 ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_handler.o)
-                0x000000000000a278                _ml_GetProtectedID
+                0x000000000000a504        0x8 ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_handler.o)
+                0x000000000000a504                _ml_GetProtectedID
  .text.ml_SetFixedBaudRate
-                0x000000000000a280       0x56 ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_init.o)
-                0x000000000000a280                _ml_SetFixedBaudRate
- .text.ml_Init  0x000000000000a2d6       0x62 ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_init.o)
-                0x000000000000a2d6                _ml_Init
-                0x000000000000a338                . = ALIGN (0x2)
-                0x000000000000a338                _etext = .
+                0x000000000000a50c       0x56 ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_init.o)
+                0x000000000000a50c                _ml_SetFixedBaudRate
+ .text.ml_Init  0x000000000000a562       0x62 ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_init.o)
+                0x000000000000a562                _ml_Init
+                0x000000000000a5c4                . = ALIGN (0x2)
+                0x000000000000a5c4                _etext = .
 
-.flash_fill     0x000000000000a338     0x34ac
-                0x000000000000a338                . = ALIGN (0x2)
+.flash_fill     0x000000000000a5c4     0x3220
+                0x000000000000a5c4                . = ALIGN (0x2)
  FILL mask 0xff07
                 0x000000000000d7e2                . = ALIGN (((ABSOLUTE (ORIGIN (flash)) + 0x7da4) - 0x2))
- *fill*         0x000000000000a338     0x34aa ff07
+ *fill*         0x000000000000a5c4     0x321e ff07
                 0x000000000000d7e2        0x2 SHORT 0x7ff
 
 .fw_product_id  0x000000000000d7e4        0x8
@@ -6089,7 +6151,7 @@ END GROUP
 
 .flash_crc      0x000000000000d7fc        0x4
  *(.FL_SIGN)
-                0x000000000000d7fc        0x4 LONG 0x90d8f3 FL_SIGN
+                0x000000000000d7fc        0x4 LONG 0xfb10b4 FL_SIGN
 
 .ep             0x0000000000000840        0x0
                 0x0000000000000840                . = ALIGN (0x2)
@@ -6291,443 +6353,443 @@ END GROUP
                 0x0000000000001002                _plinEventTable = 0x1002
 OUTPUT(81332-xLW-BMx-202_Woory_4Way_Valve.elf elf32-mlx16-fx)
 
-.debug_frame    0x0000000000000000     0x21c4
+.debug_frame    0x0000000000000000     0x2314
  .debug_frame   0x0000000000000000       0x54 obj/AppLin.o
- .debug_frame   0x0000000000000054      0x158 obj/AppValve.o
- .debug_frame   0x00000000000001ac      0x190 obj/adc.o
- .debug_frame   0x000000000000033c      0x1f0 obj/app_sensor.o
- .debug_frame   0x000000000000052c       0x44 obj/conv_clock_error.o
- .debug_frame   0x0000000000000570       0x4c obj/conv_high_voltage.o
- .debug_frame   0x00000000000005bc       0x4c obj/conv_low_voltage.o
- .debug_frame   0x0000000000000608       0x8c obj/conv_motor_voltage.o
- .debug_frame   0x0000000000000694       0x4c obj/conv_shunt_current.o
- .debug_frame   0x00000000000006e0      0x194 obj/dcm_driver.o
- .debug_frame   0x0000000000000874      0x174 obj/diagnostic.o
- .debug_frame   0x00000000000009e8      0x15c obj/eeprom_app.o
- .debug_frame   0x0000000000000b44       0x44 obj/filter_avg.o
- .debug_frame   0x0000000000000b88       0x5c obj/fw_ints.o
- .debug_frame   0x0000000000000be4       0xc4 obj/fw_mls_api.o
- .debug_frame   0x0000000000000ca8       0x74 obj/fw_mls_device_id.o
- .debug_frame   0x0000000000000d1c       0x54 obj/fw_premain.o
- .debug_frame   0x0000000000000d70       0x24 obj/fw_ram_section_init.o
- .debug_frame   0x0000000000000d94       0x24 obj/fw_startup.o
- .debug_frame   0x0000000000000db8      0x15c obj/lin22.o
- .debug_frame   0x0000000000000f14       0x70 obj/lin_api_config.o
- .debug_frame   0x0000000000000f84      0x108 obj/lin_cfg_sl.o
- .debug_frame   0x000000000000108c       0x54 obj/lin_core.o
- .debug_frame   0x00000000000010e0       0xf4 obj/lin_core_sl.o
- .debug_frame   0x00000000000011d4       0xb4 obj/lin_signals.o
- .debug_frame   0x0000000000001288       0xa0 obj/main.o
- .debug_frame   0x0000000000001328       0xc0 obj/protection.o
- .debug_frame   0x00000000000013e8      0x12c obj/pwm.o
- .debug_frame   0x0000000000001514      0x148 obj/swtimer.o
- .debug_frame   0x000000000000165c       0x98 obj/systimer.o
- .debug_frame   0x00000000000016f4      0x108 obj/uart_plot.o
- .debug_frame   0x00000000000017fc      0x164 obj/unirom.o
- .debug_frame   0x0000000000001960       0x24 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(lib_calculate_temperature.o)
- .debug_frame   0x0000000000001984       0x64 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(lib_clock.o)
- .debug_frame   0x00000000000019e8      0x210 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(eeprom_drv.o)
- .debug_frame   0x0000000000001bf8       0x34 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(fwversion.o)
- .debug_frame   0x0000000000001c2c       0x64 ../../code/camcu_platform/config/../lib/81332B02\libmath.a(atan.o)
- .debug_frame   0x0000000000001c90      0x278 ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_diag_transfer.o)
- .debug_frame   0x0000000000001f08       0x84 ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_handler.o)
- .debug_frame   0x0000000000001f8c      0x10c ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_init.o)
- .debug_frame   0x0000000000002098       0x50 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_gt_sf.o)
- .debug_frame   0x00000000000020e8       0x2c c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_si_to_sf.o)
- .debug_frame   0x0000000000002114       0x2c c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_clzsi2.o)
- .debug_frame   0x0000000000002140       0x2c c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_pack_sf.o)
- .debug_frame   0x000000000000216c       0x2c c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_unpack_sf.o)
- .debug_frame   0x0000000000002198       0x2c c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_fpcmp_parts_sf.o)
+ .debug_frame   0x0000000000000054      0x2a8 obj/AppValve.o
+ .debug_frame   0x00000000000002fc      0x190 obj/adc.o
+ .debug_frame   0x000000000000048c      0x1f0 obj/app_sensor.o
+ .debug_frame   0x000000000000067c       0x44 obj/conv_clock_error.o
+ .debug_frame   0x00000000000006c0       0x4c obj/conv_high_voltage.o
+ .debug_frame   0x000000000000070c       0x4c obj/conv_low_voltage.o
+ .debug_frame   0x0000000000000758       0x8c obj/conv_motor_voltage.o
+ .debug_frame   0x00000000000007e4       0x4c obj/conv_shunt_current.o
+ .debug_frame   0x0000000000000830      0x194 obj/dcm_driver.o
+ .debug_frame   0x00000000000009c4      0x174 obj/diagnostic.o
+ .debug_frame   0x0000000000000b38      0x15c obj/eeprom_app.o
+ .debug_frame   0x0000000000000c94       0x44 obj/filter_avg.o
+ .debug_frame   0x0000000000000cd8       0x5c obj/fw_ints.o
+ .debug_frame   0x0000000000000d34       0xc4 obj/fw_mls_api.o
+ .debug_frame   0x0000000000000df8       0x74 obj/fw_mls_device_id.o
+ .debug_frame   0x0000000000000e6c       0x54 obj/fw_premain.o
+ .debug_frame   0x0000000000000ec0       0x24 obj/fw_ram_section_init.o
+ .debug_frame   0x0000000000000ee4       0x24 obj/fw_startup.o
+ .debug_frame   0x0000000000000f08      0x15c obj/lin22.o
+ .debug_frame   0x0000000000001064       0x70 obj/lin_api_config.o
+ .debug_frame   0x00000000000010d4      0x108 obj/lin_cfg_sl.o
+ .debug_frame   0x00000000000011dc       0x54 obj/lin_core.o
+ .debug_frame   0x0000000000001230       0xf4 obj/lin_core_sl.o
+ .debug_frame   0x0000000000001324       0xb4 obj/lin_signals.o
+ .debug_frame   0x00000000000013d8       0xa0 obj/main.o
+ .debug_frame   0x0000000000001478       0xc0 obj/protection.o
+ .debug_frame   0x0000000000001538      0x12c obj/pwm.o
+ .debug_frame   0x0000000000001664      0x148 obj/swtimer.o
+ .debug_frame   0x00000000000017ac       0x98 obj/systimer.o
+ .debug_frame   0x0000000000001844      0x108 obj/uart_plot.o
+ .debug_frame   0x000000000000194c      0x164 obj/unirom.o
+ .debug_frame   0x0000000000001ab0       0x24 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(lib_calculate_temperature.o)
+ .debug_frame   0x0000000000001ad4       0x64 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(lib_clock.o)
+ .debug_frame   0x0000000000001b38      0x210 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(eeprom_drv.o)
+ .debug_frame   0x0000000000001d48       0x34 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(fwversion.o)
+ .debug_frame   0x0000000000001d7c       0x64 ../../code/camcu_platform/config/../lib/81332B02\libmath.a(atan.o)
+ .debug_frame   0x0000000000001de0      0x278 ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_diag_transfer.o)
+ .debug_frame   0x0000000000002058       0x84 ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_handler.o)
+ .debug_frame   0x00000000000020dc      0x10c ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_init.o)
+ .debug_frame   0x00000000000021e8       0x50 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_gt_sf.o)
+ .debug_frame   0x0000000000002238       0x2c c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_si_to_sf.o)
+ .debug_frame   0x0000000000002264       0x2c c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_clzsi2.o)
+ .debug_frame   0x0000000000002290       0x2c c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_pack_sf.o)
+ .debug_frame   0x00000000000022bc       0x2c c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_unpack_sf.o)
+ .debug_frame   0x00000000000022e8       0x2c c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_fpcmp_parts_sf.o)
 
-.debug_info     0x0000000000000000    0x7c959
- .debug_info    0x0000000000000000     0x33e1 obj/AppLin.o
- .debug_info    0x00000000000033e1     0x4b03 obj/AppValve.o
- .debug_info    0x0000000000007ee4     0x39c5 obj/adc.o
- .debug_info    0x000000000000b8a9      0x124 obj/app_descriptor.o
- .debug_info    0x000000000000b9cd     0x9357 obj/app_sensor.o
- .debug_info    0x0000000000014d24      0x84e obj/conv_clock_error.o
- .debug_info    0x0000000000015572      0xa34 obj/conv_high_voltage.o
- .debug_info    0x0000000000015fa6      0xa34 obj/conv_low_voltage.o
- .debug_info    0x00000000000169da      0xcc5 obj/conv_motor_voltage.o
- .debug_info    0x000000000001769f      0x9d1 obj/conv_shunt_current.o
- .debug_info    0x0000000000018070     0x8c80 obj/dcm_driver.o
- .debug_info    0x0000000000020cf0     0x2fd4 obj/diagnostic.o
- .debug_info    0x0000000000023cc4     0x347f obj/eeprom_app.o
- .debug_info    0x0000000000027143      0x1db obj/filter_avg.o
- .debug_info    0x000000000002731e     0x25f1 obj/fw_ints.o
- .debug_info    0x000000000002990f     0x2e9c obj/fw_mls_api.o
- .debug_info    0x000000000002c7ab     0x3ad8 obj/fw_mls_device_id.o
- .debug_info    0x0000000000030283     0x3440 obj/fw_premain.o
- .debug_info    0x00000000000336c3      0x159 obj/fw_ram_section_init.o
- .debug_info    0x000000000003381c     0x2722 obj/fw_startup.o
- .debug_info    0x0000000000035f3e     0x4464 obj/lin22.o
- .debug_info    0x000000000003a3a2     0x32d9 obj/lin_api_config.o
- .debug_info    0x000000000003d67b     0x3821 obj/lin_cfg_sl.o
- .debug_info    0x0000000000040e9c     0x3210 obj/lin_core.o
- .debug_info    0x00000000000440ac     0x36ce obj/lin_core_sl.o
- .debug_info    0x000000000004777a     0x3a8c obj/lin_signals.o
- .debug_info    0x000000000004b206     0x9f03 obj/main.o
- .debug_info    0x0000000000055109     0x27bc obj/protection.o
- .debug_info    0x00000000000578c5     0x344d obj/pwm.o
- .debug_info    0x000000000005ad12     0x2a77 obj/swtimer.o
- .debug_info    0x000000000005d789     0x2795 obj/systimer.o
- .debug_info    0x000000000005ff1e     0x880c obj/uart_plot.o
- .debug_info    0x000000000006872a     0x30cb obj/unirom.o
- .debug_info    0x000000000006b7f5      0x763 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(lib_calculate_temperature.o)
- .debug_info    0x000000000006bf58     0x2d86 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(lib_clock.o)
- .debug_info    0x000000000006ecde     0x325f ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(eeprom_drv.o)
- .debug_info    0x0000000000071f3d      0x186 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(fwversion.o)
- .debug_info    0x00000000000720c3      0x228 ../../code/camcu_platform/config/../lib/81332B02\libmath.a(atan.o)
- .debug_info    0x00000000000722eb     0x3351 ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_diag_transfer.o)
- .debug_info    0x000000000007563c     0x2eb5 ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_handler.o)
- .debug_info    0x00000000000784f1     0x3097 ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_init.o)
- .debug_info    0x000000000007b588      0x342 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_gt_sf.o)
- .debug_info    0x000000000007b8ca      0x2e8 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_si_to_sf.o)
- .debug_info    0x000000000007bbb2      0x267 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_clzsi2.o)
- .debug_info    0x000000000007be19      0x38f c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_pack_sf.o)
- .debug_info    0x000000000007c1a8      0x314 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_unpack_sf.o)
- .debug_info    0x000000000007c4bc      0x2a5 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_fpcmp_parts_sf.o)
- .debug_info    0x000000000007c761      0x1f8 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_clz.o)
+.debug_info     0x0000000000000000    0x7d116
+ .debug_info    0x0000000000000000     0x3535 obj/AppLin.o
+ .debug_info    0x0000000000003535     0x4fbd obj/AppValve.o
+ .debug_info    0x00000000000084f2     0x39df obj/adc.o
+ .debug_info    0x000000000000bed1      0x124 obj/app_descriptor.o
+ .debug_info    0x000000000000bff5     0x9371 obj/app_sensor.o
+ .debug_info    0x0000000000015366      0x84e obj/conv_clock_error.o
+ .debug_info    0x0000000000015bb4      0xa34 obj/conv_high_voltage.o
+ .debug_info    0x00000000000165e8      0xa34 obj/conv_low_voltage.o
+ .debug_info    0x000000000001701c      0xcc5 obj/conv_motor_voltage.o
+ .debug_info    0x0000000000017ce1      0x9d1 obj/conv_shunt_current.o
+ .debug_info    0x00000000000186b2     0x8d05 obj/dcm_driver.o
+ .debug_info    0x00000000000213b7     0x2fee obj/diagnostic.o
+ .debug_info    0x00000000000243a5     0x347f obj/eeprom_app.o
+ .debug_info    0x0000000000027824      0x1db obj/filter_avg.o
+ .debug_info    0x00000000000279ff     0x25f1 obj/fw_ints.o
+ .debug_info    0x0000000000029ff0     0x2e9c obj/fw_mls_api.o
+ .debug_info    0x000000000002ce8c     0x3ad8 obj/fw_mls_device_id.o
+ .debug_info    0x0000000000030964     0x345a obj/fw_premain.o
+ .debug_info    0x0000000000033dbe      0x159 obj/fw_ram_section_init.o
+ .debug_info    0x0000000000033f17     0x273c obj/fw_startup.o
+ .debug_info    0x0000000000036653     0x447e obj/lin22.o
+ .debug_info    0x000000000003aad1     0x32d9 obj/lin_api_config.o
+ .debug_info    0x000000000003ddaa     0x3821 obj/lin_cfg_sl.o
+ .debug_info    0x00000000000415cb     0x3210 obj/lin_core.o
+ .debug_info    0x00000000000447db     0x36ce obj/lin_core_sl.o
+ .debug_info    0x0000000000047ea9     0x3a8c obj/lin_signals.o
+ .debug_info    0x000000000004b935     0x9f3d obj/main.o
+ .debug_info    0x0000000000055872     0x27dc obj/protection.o
+ .debug_info    0x000000000005804e     0x3467 obj/pwm.o
+ .debug_info    0x000000000005b4b5     0x2a77 obj/swtimer.o
+ .debug_info    0x000000000005df2c     0x27af obj/systimer.o
+ .debug_info    0x00000000000606db     0x880c obj/uart_plot.o
+ .debug_info    0x0000000000068ee7     0x30cb obj/unirom.o
+ .debug_info    0x000000000006bfb2      0x763 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(lib_calculate_temperature.o)
+ .debug_info    0x000000000006c715     0x2d86 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(lib_clock.o)
+ .debug_info    0x000000000006f49b     0x325f ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(eeprom_drv.o)
+ .debug_info    0x00000000000726fa      0x186 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(fwversion.o)
+ .debug_info    0x0000000000072880      0x228 ../../code/camcu_platform/config/../lib/81332B02\libmath.a(atan.o)
+ .debug_info    0x0000000000072aa8     0x3351 ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_diag_transfer.o)
+ .debug_info    0x0000000000075df9     0x2eb5 ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_handler.o)
+ .debug_info    0x0000000000078cae     0x3097 ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_init.o)
+ .debug_info    0x000000000007bd45      0x342 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_gt_sf.o)
+ .debug_info    0x000000000007c087      0x2e8 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_si_to_sf.o)
+ .debug_info    0x000000000007c36f      0x267 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_clzsi2.o)
+ .debug_info    0x000000000007c5d6      0x38f c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_pack_sf.o)
+ .debug_info    0x000000000007c965      0x314 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_unpack_sf.o)
+ .debug_info    0x000000000007cc79      0x2a5 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_fpcmp_parts_sf.o)
+ .debug_info    0x000000000007cf1e      0x1f8 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_clz.o)
 
-.debug_abbrev   0x0000000000000000     0x6513
- .debug_abbrev  0x0000000000000000      0x25d obj/AppLin.o
- .debug_abbrev  0x000000000000025d      0x3cd obj/AppValve.o
- .debug_abbrev  0x000000000000062a      0x355 obj/adc.o
- .debug_abbrev  0x000000000000097f       0x61 obj/app_descriptor.o
- .debug_abbrev  0x00000000000009e0      0x459 obj/app_sensor.o
- .debug_abbrev  0x0000000000000e39      0x13a obj/conv_clock_error.o
- .debug_abbrev  0x0000000000000f73      0x18a obj/conv_high_voltage.o
- .debug_abbrev  0x00000000000010fd      0x18a obj/conv_low_voltage.o
- .debug_abbrev  0x0000000000001287      0x1d5 obj/conv_motor_voltage.o
- .debug_abbrev  0x000000000000145c      0x199 obj/conv_shunt_current.o
- .debug_abbrev  0x00000000000015f5      0x3bb obj/dcm_driver.o
- .debug_abbrev  0x00000000000019b0      0x1d6 obj/diagnostic.o
- .debug_abbrev  0x0000000000001b86      0x268 obj/eeprom_app.o
- .debug_abbrev  0x0000000000001dee      0x100 obj/filter_avg.o
- .debug_abbrev  0x0000000000001eee      0x101 obj/fw_ints.o
- .debug_abbrev  0x0000000000001fef      0x1e5 obj/fw_mls_api.o
- .debug_abbrev  0x00000000000021d4      0x29c obj/fw_mls_device_id.o
- .debug_abbrev  0x0000000000002470      0x1e2 obj/fw_premain.o
- .debug_abbrev  0x0000000000002652       0x75 obj/fw_ram_section_init.o
- .debug_abbrev  0x00000000000026c7      0x11c obj/fw_startup.o
- .debug_abbrev  0x00000000000027e3      0x426 obj/lin22.o
- .debug_abbrev  0x0000000000002c09      0x268 obj/lin_api_config.o
- .debug_abbrev  0x0000000000002e71      0x3a6 obj/lin_cfg_sl.o
- .debug_abbrev  0x0000000000003217      0x275 obj/lin_core.o
- .debug_abbrev  0x000000000000348c      0x348 obj/lin_core_sl.o
- .debug_abbrev  0x00000000000037d4      0x2a3 obj/lin_signals.o
- .debug_abbrev  0x0000000000003a77      0x3aa obj/main.o
- .debug_abbrev  0x0000000000003e21       0xeb obj/protection.o
- .debug_abbrev  0x0000000000003f0c      0x283 obj/pwm.o
- .debug_abbrev  0x000000000000418f      0x245 obj/swtimer.o
- .debug_abbrev  0x00000000000043d4      0x19a obj/systimer.o
- .debug_abbrev  0x000000000000456e      0x403 obj/uart_plot.o
- .debug_abbrev  0x0000000000004971      0x20f obj/unirom.o
- .debug_abbrev  0x0000000000004b80      0x122 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(lib_calculate_temperature.o)
- .debug_abbrev  0x0000000000004ca2      0x193 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(lib_clock.o)
- .debug_abbrev  0x0000000000004e35      0x26e ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(eeprom_drv.o)
- .debug_abbrev  0x00000000000050a3       0xe7 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(fwversion.o)
- .debug_abbrev  0x000000000000518a      0x128 ../../code/camcu_platform/config/../lib/81332B02\libmath.a(atan.o)
- .debug_abbrev  0x00000000000052b2      0x3bb ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_diag_transfer.o)
- .debug_abbrev  0x000000000000566d      0x29d ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_handler.o)
- .debug_abbrev  0x000000000000590a      0x2df ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_init.o)
- .debug_abbrev  0x0000000000005be9      0x17e c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_gt_sf.o)
- .debug_abbrev  0x0000000000005d67      0x17e c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_si_to_sf.o)
- .debug_abbrev  0x0000000000005ee5      0x104 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_clzsi2.o)
- .debug_abbrev  0x0000000000005fe9      0x1b6 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_pack_sf.o)
- .debug_abbrev  0x000000000000619f      0x178 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_unpack_sf.o)
- .debug_abbrev  0x0000000000006317      0x149 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_fpcmp_parts_sf.o)
- .debug_abbrev  0x0000000000006460       0xb3 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_clz.o)
+.debug_abbrev   0x0000000000000000     0x6577
+ .debug_abbrev  0x0000000000000000      0x280 obj/AppLin.o
+ .debug_abbrev  0x0000000000000280      0x428 obj/AppValve.o
+ .debug_abbrev  0x00000000000006a8      0x355 obj/adc.o
+ .debug_abbrev  0x00000000000009fd       0x61 obj/app_descriptor.o
+ .debug_abbrev  0x0000000000000a5e      0x459 obj/app_sensor.o
+ .debug_abbrev  0x0000000000000eb7      0x13a obj/conv_clock_error.o
+ .debug_abbrev  0x0000000000000ff1      0x18a obj/conv_high_voltage.o
+ .debug_abbrev  0x000000000000117b      0x18a obj/conv_low_voltage.o
+ .debug_abbrev  0x0000000000001305      0x1d5 obj/conv_motor_voltage.o
+ .debug_abbrev  0x00000000000014da      0x199 obj/conv_shunt_current.o
+ .debug_abbrev  0x0000000000001673      0x3a1 obj/dcm_driver.o
+ .debug_abbrev  0x0000000000001a14      0x1d6 obj/diagnostic.o
+ .debug_abbrev  0x0000000000001bea      0x268 obj/eeprom_app.o
+ .debug_abbrev  0x0000000000001e52      0x100 obj/filter_avg.o
+ .debug_abbrev  0x0000000000001f52      0x101 obj/fw_ints.o
+ .debug_abbrev  0x0000000000002053      0x1e5 obj/fw_mls_api.o
+ .debug_abbrev  0x0000000000002238      0x29c obj/fw_mls_device_id.o
+ .debug_abbrev  0x00000000000024d4      0x1e2 obj/fw_premain.o
+ .debug_abbrev  0x00000000000026b6       0x75 obj/fw_ram_section_init.o
+ .debug_abbrev  0x000000000000272b      0x11c obj/fw_startup.o
+ .debug_abbrev  0x0000000000002847      0x426 obj/lin22.o
+ .debug_abbrev  0x0000000000002c6d      0x268 obj/lin_api_config.o
+ .debug_abbrev  0x0000000000002ed5      0x3a6 obj/lin_cfg_sl.o
+ .debug_abbrev  0x000000000000327b      0x275 obj/lin_core.o
+ .debug_abbrev  0x00000000000034f0      0x348 obj/lin_core_sl.o
+ .debug_abbrev  0x0000000000003838      0x2a3 obj/lin_signals.o
+ .debug_abbrev  0x0000000000003adb      0x3aa obj/main.o
+ .debug_abbrev  0x0000000000003e85       0xeb obj/protection.o
+ .debug_abbrev  0x0000000000003f70      0x283 obj/pwm.o
+ .debug_abbrev  0x00000000000041f3      0x245 obj/swtimer.o
+ .debug_abbrev  0x0000000000004438      0x19a obj/systimer.o
+ .debug_abbrev  0x00000000000045d2      0x403 obj/uart_plot.o
+ .debug_abbrev  0x00000000000049d5      0x20f obj/unirom.o
+ .debug_abbrev  0x0000000000004be4      0x122 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(lib_calculate_temperature.o)
+ .debug_abbrev  0x0000000000004d06      0x193 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(lib_clock.o)
+ .debug_abbrev  0x0000000000004e99      0x26e ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(eeprom_drv.o)
+ .debug_abbrev  0x0000000000005107       0xe7 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(fwversion.o)
+ .debug_abbrev  0x00000000000051ee      0x128 ../../code/camcu_platform/config/../lib/81332B02\libmath.a(atan.o)
+ .debug_abbrev  0x0000000000005316      0x3bb ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_diag_transfer.o)
+ .debug_abbrev  0x00000000000056d1      0x29d ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_handler.o)
+ .debug_abbrev  0x000000000000596e      0x2df ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_init.o)
+ .debug_abbrev  0x0000000000005c4d      0x17e c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_gt_sf.o)
+ .debug_abbrev  0x0000000000005dcb      0x17e c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_si_to_sf.o)
+ .debug_abbrev  0x0000000000005f49      0x104 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_clzsi2.o)
+ .debug_abbrev  0x000000000000604d      0x1b6 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_pack_sf.o)
+ .debug_abbrev  0x0000000000006203      0x178 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_unpack_sf.o)
+ .debug_abbrev  0x000000000000637b      0x149 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_fpcmp_parts_sf.o)
+ .debug_abbrev  0x00000000000064c4       0xb3 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_clz.o)
 
-.debug_loc      0x0000000000000000     0x53cb
- .debug_loc     0x0000000000000000       0x3c obj/AppLin.o
- .debug_loc     0x000000000000003c      0x577 obj/AppValve.o
- .debug_loc     0x00000000000005b3      0x2b2 obj/adc.o
- .debug_loc     0x0000000000000865      0x428 obj/app_sensor.o
- .debug_loc     0x0000000000000c8d       0x88 obj/conv_clock_error.o
- .debug_loc     0x0000000000000d15      0x132 obj/conv_high_voltage.o
- .debug_loc     0x0000000000000e47      0x132 obj/conv_low_voltage.o
- .debug_loc     0x0000000000000f79      0x2d9 obj/conv_motor_voltage.o
- .debug_loc     0x0000000000001252      0x132 obj/conv_shunt_current.o
- .debug_loc     0x0000000000001384      0x272 obj/dcm_driver.o
- .debug_loc     0x00000000000015f6      0x131 obj/diagnostic.o
- .debug_loc     0x0000000000001727      0x2fc obj/eeprom_app.o
- .debug_loc     0x0000000000001a23      0x110 obj/filter_avg.o
- .debug_loc     0x0000000000001b33       0x57 obj/fw_ints.o
- .debug_loc     0x0000000000001b8a      0x12d obj/fw_mls_api.o
- .debug_loc     0x0000000000001cb7      0x132 obj/fw_mls_device_id.o
- .debug_loc     0x0000000000001de9       0x58 obj/fw_premain.o
- .debug_loc     0x0000000000001e41       0x13 obj/fw_ram_section_init.o
- .debug_loc     0x0000000000001e54      0x26e obj/lin22.o
- .debug_loc     0x00000000000020c2       0x82 obj/lin_api_config.o
- .debug_loc     0x0000000000002144      0x358 obj/lin_cfg_sl.o
- .debug_loc     0x000000000000249c       0x91 obj/lin_core.o
- .debug_loc     0x000000000000252d      0x1bb obj/lin_core_sl.o
- .debug_loc     0x00000000000026e8      0x4f4 obj/lin_signals.o
- .debug_loc     0x0000000000002bdc       0x7a obj/main.o
- .debug_loc     0x0000000000002c56       0x5c obj/protection.o
- .debug_loc     0x0000000000002cb2      0x1d0 obj/pwm.o
- .debug_loc     0x0000000000002e82      0x29d obj/swtimer.o
- .debug_loc     0x000000000000311f       0xad obj/systimer.o
- .debug_loc     0x00000000000031cc      0x1f7 obj/uart_plot.o
- .debug_loc     0x00000000000033c3      0x3f7 obj/unirom.o
- .debug_loc     0x00000000000037ba       0x7d ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(lib_calculate_temperature.o)
- .debug_loc     0x0000000000003837      0x226 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(lib_clock.o)
- .debug_loc     0x0000000000003a5d      0x8a7 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(eeprom_drv.o)
- .debug_loc     0x0000000000004304       0x4c ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(fwversion.o)
- .debug_loc     0x0000000000004350      0x142 ../../code/camcu_platform/config/../lib/81332B02\libmath.a(atan.o)
- .debug_loc     0x0000000000004492      0x589 ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_diag_transfer.o)
- .debug_loc     0x0000000000004a1b       0xd7 ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_handler.o)
- .debug_loc     0x0000000000004af2      0x399 ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_init.o)
- .debug_loc     0x0000000000004e8b       0x8c c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_gt_sf.o)
- .debug_loc     0x0000000000004f17       0xbb c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_si_to_sf.o)
- .debug_loc     0x0000000000004fd2      0x13c c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_clzsi2.o)
- .debug_loc     0x000000000000510e      0x1a8 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_pack_sf.o)
- .debug_loc     0x00000000000052b6       0xcb c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_unpack_sf.o)
- .debug_loc     0x0000000000005381       0x4a c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_fpcmp_parts_sf.o)
+.debug_loc      0x0000000000000000     0x569c
+ .debug_loc     0x0000000000000000       0x5a obj/AppLin.o
+ .debug_loc     0x000000000000005a      0x81f obj/AppValve.o
+ .debug_loc     0x0000000000000879      0x2b2 obj/adc.o
+ .debug_loc     0x0000000000000b2b      0x428 obj/app_sensor.o
+ .debug_loc     0x0000000000000f53       0x88 obj/conv_clock_error.o
+ .debug_loc     0x0000000000000fdb      0x132 obj/conv_high_voltage.o
+ .debug_loc     0x000000000000110d      0x132 obj/conv_low_voltage.o
+ .debug_loc     0x000000000000123f      0x2d9 obj/conv_motor_voltage.o
+ .debug_loc     0x0000000000001518      0x132 obj/conv_shunt_current.o
+ .debug_loc     0x000000000000164a      0x27d obj/dcm_driver.o
+ .debug_loc     0x00000000000018c7      0x131 obj/diagnostic.o
+ .debug_loc     0x00000000000019f8      0x2fc obj/eeprom_app.o
+ .debug_loc     0x0000000000001cf4      0x110 obj/filter_avg.o
+ .debug_loc     0x0000000000001e04       0x57 obj/fw_ints.o
+ .debug_loc     0x0000000000001e5b      0x12d obj/fw_mls_api.o
+ .debug_loc     0x0000000000001f88      0x132 obj/fw_mls_device_id.o
+ .debug_loc     0x00000000000020ba       0x58 obj/fw_premain.o
+ .debug_loc     0x0000000000002112       0x13 obj/fw_ram_section_init.o
+ .debug_loc     0x0000000000002125      0x26e obj/lin22.o
+ .debug_loc     0x0000000000002393       0x82 obj/lin_api_config.o
+ .debug_loc     0x0000000000002415      0x358 obj/lin_cfg_sl.o
+ .debug_loc     0x000000000000276d       0x91 obj/lin_core.o
+ .debug_loc     0x00000000000027fe      0x1bb obj/lin_core_sl.o
+ .debug_loc     0x00000000000029b9      0x4f4 obj/lin_signals.o
+ .debug_loc     0x0000000000002ead       0x7a obj/main.o
+ .debug_loc     0x0000000000002f27       0x5c obj/protection.o
+ .debug_loc     0x0000000000002f83      0x1d0 obj/pwm.o
+ .debug_loc     0x0000000000003153      0x29d obj/swtimer.o
+ .debug_loc     0x00000000000033f0       0xad obj/systimer.o
+ .debug_loc     0x000000000000349d      0x1f7 obj/uart_plot.o
+ .debug_loc     0x0000000000003694      0x3f7 obj/unirom.o
+ .debug_loc     0x0000000000003a8b       0x7d ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(lib_calculate_temperature.o)
+ .debug_loc     0x0000000000003b08      0x226 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(lib_clock.o)
+ .debug_loc     0x0000000000003d2e      0x8a7 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(eeprom_drv.o)
+ .debug_loc     0x00000000000045d5       0x4c ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(fwversion.o)
+ .debug_loc     0x0000000000004621      0x142 ../../code/camcu_platform/config/../lib/81332B02\libmath.a(atan.o)
+ .debug_loc     0x0000000000004763      0x589 ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_diag_transfer.o)
+ .debug_loc     0x0000000000004cec       0xd7 ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_handler.o)
+ .debug_loc     0x0000000000004dc3      0x399 ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_init.o)
+ .debug_loc     0x000000000000515c       0x8c c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_gt_sf.o)
+ .debug_loc     0x00000000000051e8       0xbb c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_si_to_sf.o)
+ .debug_loc     0x00000000000052a3      0x13c c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_clzsi2.o)
+ .debug_loc     0x00000000000053df      0x1a8 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_pack_sf.o)
+ .debug_loc     0x0000000000005587       0xcb c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_unpack_sf.o)
+ .debug_loc     0x0000000000005652       0x4a c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_fpcmp_parts_sf.o)
 
-.debug_aranges  0x0000000000000000      0xd80
+.debug_aranges  0x0000000000000000      0xe08
  .debug_aranges
                 0x0000000000000000       0x38 obj/AppLin.o
  .debug_aranges
-                0x0000000000000038       0x88 obj/AppValve.o
+                0x0000000000000038      0x110 obj/AppValve.o
  .debug_aranges
-                0x00000000000000c0       0x88 obj/adc.o
+                0x0000000000000148       0x88 obj/adc.o
  .debug_aranges
-                0x0000000000000148       0x18 obj/app_descriptor.o
+                0x00000000000001d0       0x18 obj/app_descriptor.o
  .debug_aranges
-                0x0000000000000160       0xa0 obj/app_sensor.o
+                0x00000000000001e8       0xa0 obj/app_sensor.o
  .debug_aranges
-                0x0000000000000200       0x30 obj/conv_clock_error.o
+                0x0000000000000288       0x30 obj/conv_clock_error.o
  .debug_aranges
-                0x0000000000000230       0x30 obj/conv_high_voltage.o
+                0x00000000000002b8       0x30 obj/conv_high_voltage.o
  .debug_aranges
-                0x0000000000000260       0x30 obj/conv_low_voltage.o
+                0x00000000000002e8       0x30 obj/conv_low_voltage.o
  .debug_aranges
-                0x0000000000000290       0x48 obj/conv_motor_voltage.o
+                0x0000000000000318       0x48 obj/conv_motor_voltage.o
  .debug_aranges
-                0x00000000000002d8       0x30 obj/conv_shunt_current.o
+                0x0000000000000360       0x30 obj/conv_shunt_current.o
  .debug_aranges
-                0x0000000000000308       0xc0 obj/dcm_driver.o
+                0x0000000000000390       0xc0 obj/dcm_driver.o
  .debug_aranges
-                0x00000000000003c8       0x88 obj/diagnostic.o
+                0x0000000000000450       0x88 obj/diagnostic.o
  .debug_aranges
-                0x0000000000000450       0x68 obj/eeprom_app.o
+                0x00000000000004d8       0x68 obj/eeprom_app.o
  .debug_aranges
-                0x00000000000004b8       0x28 obj/filter_avg.o
+                0x0000000000000540       0x28 obj/filter_avg.o
  .debug_aranges
-                0x00000000000004e0       0x28 obj/fw_ints.o
+                0x0000000000000568       0x28 obj/fw_ints.o
  .debug_aranges
-                0x0000000000000508       0x38 obj/fw_mls_api.o
+                0x0000000000000590       0x38 obj/fw_mls_api.o
  .debug_aranges
-                0x0000000000000540       0x38 obj/fw_mls_device_id.o
+                0x00000000000005c8       0x38 obj/fw_mls_device_id.o
  .debug_aranges
-                0x0000000000000578       0x28 obj/fw_premain.o
+                0x0000000000000600       0x28 obj/fw_premain.o
  .debug_aranges
-                0x00000000000005a0       0x20 obj/fw_ram_section_init.o
+                0x0000000000000628       0x20 obj/fw_ram_section_init.o
  .debug_aranges
-                0x00000000000005c0       0x20 obj/fw_startup.o
+                0x0000000000000648       0x20 obj/fw_startup.o
  .debug_aranges
-                0x00000000000005e0       0x70 obj/lin22.o
+                0x0000000000000668       0x70 obj/lin22.o
  .debug_aranges
-                0x0000000000000650       0x30 obj/lin_api_config.o
+                0x00000000000006d8       0x30 obj/lin_api_config.o
  .debug_aranges
-                0x0000000000000680       0x68 obj/lin_cfg_sl.o
+                0x0000000000000708       0x68 obj/lin_cfg_sl.o
  .debug_aranges
-                0x00000000000006e8       0x30 obj/lin_core.o
+                0x0000000000000770       0x30 obj/lin_core.o
  .debug_aranges
-                0x0000000000000718       0x78 obj/lin_core_sl.o
+                0x00000000000007a0       0x78 obj/lin_core_sl.o
  .debug_aranges
-                0x0000000000000790       0x30 obj/lin_signals.o
+                0x0000000000000818       0x30 obj/lin_signals.o
  .debug_aranges
-                0x00000000000007c0       0x48 obj/main.o
+                0x0000000000000848       0x48 obj/main.o
  .debug_aranges
-                0x0000000000000808       0x58 obj/protection.o
+                0x0000000000000890       0x58 obj/protection.o
  .debug_aranges
-                0x0000000000000860       0x68 obj/pwm.o
+                0x00000000000008e8       0x68 obj/pwm.o
  .debug_aranges
-                0x00000000000008c8       0x78 obj/swtimer.o
+                0x0000000000000950       0x78 obj/swtimer.o
  .debug_aranges
-                0x0000000000000940       0x38 obj/systimer.o
+                0x00000000000009c8       0x38 obj/systimer.o
  .debug_aranges
-                0x0000000000000978       0x58 obj/uart_plot.o
+                0x0000000000000a00       0x58 obj/uart_plot.o
  .debug_aranges
-                0x00000000000009d0       0x68 obj/unirom.o
+                0x0000000000000a58       0x68 obj/unirom.o
  .debug_aranges
-                0x0000000000000a38       0x20 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(lib_calculate_temperature.o)
+                0x0000000000000ac0       0x20 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(lib_calculate_temperature.o)
  .debug_aranges
-                0x0000000000000a58       0x38 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(lib_clock.o)
+                0x0000000000000ae0       0x38 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(lib_clock.o)
  .debug_aranges
-                0x0000000000000a90       0x78 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(eeprom_drv.o)
+                0x0000000000000b18       0x78 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(eeprom_drv.o)
  .debug_aranges
-                0x0000000000000b08       0x28 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(fwversion.o)
+                0x0000000000000b90       0x28 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(fwversion.o)
  .debug_aranges
-                0x0000000000000b30       0x38 ../../code/camcu_platform/config/../lib/81332B02\libmath.a(atan.o)
+                0x0000000000000bb8       0x38 ../../code/camcu_platform/config/../lib/81332B02\libmath.a(atan.o)
  .debug_aranges
-                0x0000000000000b68       0xa8 ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_diag_transfer.o)
+                0x0000000000000bf0       0xa8 ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_diag_transfer.o)
  .debug_aranges
-                0x0000000000000c10       0x48 ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_handler.o)
+                0x0000000000000c98       0x48 ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_handler.o)
  .debug_aranges
-                0x0000000000000c58       0x50 ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_init.o)
+                0x0000000000000ce0       0x50 ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_init.o)
  .debug_aranges
-                0x0000000000000ca8       0x20 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_gt_sf.o)
+                0x0000000000000d30       0x20 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_gt_sf.o)
  .debug_aranges
-                0x0000000000000cc8       0x20 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_si_to_sf.o)
+                0x0000000000000d50       0x20 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_si_to_sf.o)
  .debug_aranges
-                0x0000000000000ce8       0x20 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_clzsi2.o)
+                0x0000000000000d70       0x20 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_clzsi2.o)
  .debug_aranges
-                0x0000000000000d08       0x20 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_pack_sf.o)
+                0x0000000000000d90       0x20 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_pack_sf.o)
  .debug_aranges
-                0x0000000000000d28       0x20 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_unpack_sf.o)
+                0x0000000000000db0       0x20 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_unpack_sf.o)
  .debug_aranges
-                0x0000000000000d48       0x20 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_fpcmp_parts_sf.o)
+                0x0000000000000dd0       0x20 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_fpcmp_parts_sf.o)
  .debug_aranges
-                0x0000000000000d68       0x18 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_clz.o)
+                0x0000000000000df0       0x18 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_clz.o)
 
-.debug_line     0x0000000000000000     0xd4cc
- .debug_line    0x0000000000000000      0x3ba obj/AppLin.o
- .debug_line    0x00000000000003ba     0x1a6a obj/AppValve.o
- .debug_line    0x0000000000001e24      0x6d2 obj/adc.o
- .debug_line    0x00000000000024f6       0xfc obj/app_descriptor.o
- .debug_line    0x00000000000025f2      0x76f obj/app_sensor.o
- .debug_line    0x0000000000002d61      0x213 obj/conv_clock_error.o
- .debug_line    0x0000000000002f74      0x288 obj/conv_high_voltage.o
- .debug_line    0x00000000000031fc      0x287 obj/conv_low_voltage.o
- .debug_line    0x0000000000003483      0x3b5 obj/conv_motor_voltage.o
- .debug_line    0x0000000000003838      0x27b obj/conv_shunt_current.o
- .debug_line    0x0000000000003ab3      0xe4b obj/dcm_driver.o
- .debug_line    0x00000000000048fe      0x46f obj/diagnostic.o
- .debug_line    0x0000000000004d6d      0x4c7 obj/eeprom_app.o
- .debug_line    0x0000000000005234      0x206 obj/filter_avg.o
- .debug_line    0x000000000000543a      0x18d obj/fw_ints.o
- .debug_line    0x00000000000055c7      0x2d8 obj/fw_mls_api.o
- .debug_line    0x000000000000589f      0x427 obj/fw_mls_device_id.o
- .debug_line    0x0000000000005cc6      0x312 obj/fw_premain.o
- .debug_line    0x0000000000005fd8      0x145 obj/fw_ram_section_init.o
- .debug_line    0x000000000000611d      0x221 obj/fw_startup.o
- .debug_line    0x000000000000633e      0x80f obj/lin22.o
- .debug_line    0x0000000000006b4d      0x39b obj/lin_api_config.o
- .debug_line    0x0000000000006ee8      0x779 obj/lin_cfg_sl.o
- .debug_line    0x0000000000007661      0x313 obj/lin_core.o
- .debug_line    0x0000000000007974      0x5b1 obj/lin_core_sl.o
- .debug_line    0x0000000000007f25      0x41e obj/lin_signals.o
- .debug_line    0x0000000000008343      0x720 obj/main.o
- .debug_line    0x0000000000008a63      0x34f obj/protection.o
- .debug_line    0x0000000000008db2      0x629 obj/pwm.o
- .debug_line    0x00000000000093db      0x48b obj/swtimer.o
- .debug_line    0x0000000000009866      0x278 obj/systimer.o
- .debug_line    0x0000000000009ade      0x52f obj/uart_plot.o
- .debug_line    0x000000000000a00d      0x506 obj/unirom.o
- .debug_line    0x000000000000a513      0x19c ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(lib_calculate_temperature.o)
- .debug_line    0x000000000000a6af      0x313 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(lib_clock.o)
- .debug_line    0x000000000000a9c2      0x745 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(eeprom_drv.o)
- .debug_line    0x000000000000b107       0xf5 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(fwversion.o)
- .debug_line    0x000000000000b1fc      0x137 ../../code/camcu_platform/config/../lib/81332B02\libmath.a(atan.o)
- .debug_line    0x000000000000b333      0x943 ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_diag_transfer.o)
- .debug_line    0x000000000000bc76      0x39d ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_handler.o)
- .debug_line    0x000000000000c013      0x506 ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_init.o)
- .debug_line    0x000000000000c519      0x1c1 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_gt_sf.o)
- .debug_line    0x000000000000c6da      0x201 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_si_to_sf.o)
- .debug_line    0x000000000000c8db      0x254 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_clzsi2.o)
- .debug_line    0x000000000000cb2f      0x2e2 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_pack_sf.o)
- .debug_line    0x000000000000ce11      0x276 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_unpack_sf.o)
- .debug_line    0x000000000000d087      0x237 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_fpcmp_parts_sf.o)
- .debug_line    0x000000000000d2be      0x20e c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_clz.o)
+.debug_line     0x0000000000000000     0xd9df
+ .debug_line    0x0000000000000000      0x409 obj/AppLin.o
+ .debug_line    0x0000000000000409     0x1e66 obj/AppValve.o
+ .debug_line    0x000000000000226f      0x6d2 obj/adc.o
+ .debug_line    0x0000000000002941       0xfc obj/app_descriptor.o
+ .debug_line    0x0000000000002a3d      0x76f obj/app_sensor.o
+ .debug_line    0x00000000000031ac      0x213 obj/conv_clock_error.o
+ .debug_line    0x00000000000033bf      0x288 obj/conv_high_voltage.o
+ .debug_line    0x0000000000003647      0x287 obj/conv_low_voltage.o
+ .debug_line    0x00000000000038ce      0x3b5 obj/conv_motor_voltage.o
+ .debug_line    0x0000000000003c83      0x27b obj/conv_shunt_current.o
+ .debug_line    0x0000000000003efe      0xee0 obj/dcm_driver.o
+ .debug_line    0x0000000000004dde      0x46f obj/diagnostic.o
+ .debug_line    0x000000000000524d      0x4c7 obj/eeprom_app.o
+ .debug_line    0x0000000000005714      0x206 obj/filter_avg.o
+ .debug_line    0x000000000000591a      0x18d obj/fw_ints.o
+ .debug_line    0x0000000000005aa7      0x2d8 obj/fw_mls_api.o
+ .debug_line    0x0000000000005d7f      0x427 obj/fw_mls_device_id.o
+ .debug_line    0x00000000000061a6      0x312 obj/fw_premain.o
+ .debug_line    0x00000000000064b8      0x145 obj/fw_ram_section_init.o
+ .debug_line    0x00000000000065fd      0x221 obj/fw_startup.o
+ .debug_line    0x000000000000681e      0x80f obj/lin22.o
+ .debug_line    0x000000000000702d      0x39b obj/lin_api_config.o
+ .debug_line    0x00000000000073c8      0x779 obj/lin_cfg_sl.o
+ .debug_line    0x0000000000007b41      0x313 obj/lin_core.o
+ .debug_line    0x0000000000007e54      0x5b1 obj/lin_core_sl.o
+ .debug_line    0x0000000000008405      0x41e obj/lin_signals.o
+ .debug_line    0x0000000000008823      0x753 obj/main.o
+ .debug_line    0x0000000000008f76      0x34f obj/protection.o
+ .debug_line    0x00000000000092c5      0x629 obj/pwm.o
+ .debug_line    0x00000000000098ee      0x48b obj/swtimer.o
+ .debug_line    0x0000000000009d79      0x278 obj/systimer.o
+ .debug_line    0x0000000000009ff1      0x52f obj/uart_plot.o
+ .debug_line    0x000000000000a520      0x506 obj/unirom.o
+ .debug_line    0x000000000000aa26      0x19c ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(lib_calculate_temperature.o)
+ .debug_line    0x000000000000abc2      0x313 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(lib_clock.o)
+ .debug_line    0x000000000000aed5      0x745 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(eeprom_drv.o)
+ .debug_line    0x000000000000b61a       0xf5 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(fwversion.o)
+ .debug_line    0x000000000000b70f      0x137 ../../code/camcu_platform/config/../lib/81332B02\libmath.a(atan.o)
+ .debug_line    0x000000000000b846      0x943 ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_diag_transfer.o)
+ .debug_line    0x000000000000c189      0x39d ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_handler.o)
+ .debug_line    0x000000000000c526      0x506 ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_init.o)
+ .debug_line    0x000000000000ca2c      0x1c1 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_gt_sf.o)
+ .debug_line    0x000000000000cbed      0x201 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_si_to_sf.o)
+ .debug_line    0x000000000000cdee      0x254 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_clzsi2.o)
+ .debug_line    0x000000000000d042      0x2e2 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_pack_sf.o)
+ .debug_line    0x000000000000d324      0x276 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_unpack_sf.o)
+ .debug_line    0x000000000000d59a      0x237 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_fpcmp_parts_sf.o)
+ .debug_line    0x000000000000d7d1      0x20e c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_clz.o)
 
-.debug_str      0x0000000000000000     0xf345
- .debug_str     0x0000000000000000     0x47b9 obj/AppLin.o
-                                       0x4a4e (size before relaxing)
- .debug_str     0x00000000000047b9      0xcc4 obj/AppValve.o
-                                       0x55d9 (size before relaxing)
- .debug_str     0x000000000000547d      0xe5e obj/adc.o
-                                       0x4c99 (size before relaxing)
- .debug_str     0x00000000000062db       0xcb obj/app_descriptor.o
+.debug_str      0x0000000000000000     0xf686
+ .debug_str     0x0000000000000000     0x4860 obj/AppLin.o
+                                       0x4b03 (size before relaxing)
+ .debug_str     0x0000000000004860      0xe9b obj/AppValve.o
+                                       0x57f7 (size before relaxing)
+ .debug_str     0x00000000000056fb      0xf0e obj/adc.o
+                                       0x4cb6 (size before relaxing)
+ .debug_str     0x0000000000006609       0xcb obj/app_descriptor.o
                                         0x24c (size before relaxing)
- .debug_str     0x00000000000063a6     0x40e4 obj/app_sensor.o
-                                       0x8747 (size before relaxing)
- .debug_str     0x000000000000a48a      0x112 obj/conv_clock_error.o
+ .debug_str     0x00000000000066d4     0x40e4 obj/app_sensor.o
+                                       0x8764 (size before relaxing)
+ .debug_str     0x000000000000a7b8      0x112 obj/conv_clock_error.o
                                         0x6db (size before relaxing)
- .debug_str     0x000000000000a59c      0x10f obj/conv_high_voltage.o
+ .debug_str     0x000000000000a8ca      0x10f obj/conv_high_voltage.o
                                         0x73a (size before relaxing)
- .debug_str     0x000000000000a6ab       0x8e obj/conv_low_voltage.o
+ .debug_str     0x000000000000a9d9       0x8e obj/conv_low_voltage.o
                                         0x736 (size before relaxing)
- .debug_str     0x000000000000a739      0x13e obj/conv_motor_voltage.o
+ .debug_str     0x000000000000aa67      0x13e obj/conv_motor_voltage.o
                                         0x7ef (size before relaxing)
- .debug_str     0x000000000000a877       0x8c obj/conv_shunt_current.o
+ .debug_str     0x000000000000aba5       0x8c obj/conv_shunt_current.o
                                         0x73a (size before relaxing)
- .debug_str     0x000000000000a903      0x45d obj/dcm_driver.o
-                                       0x8374 (size before relaxing)
- .debug_str     0x000000000000ad60      0x176 obj/diagnostic.o
-                                       0x4259 (size before relaxing)
- .debug_str     0x000000000000aed6      0x13a obj/eeprom_app.o
+ .debug_str     0x000000000000ac31      0x4c1 obj/dcm_driver.o
+                                       0x8373 (size before relaxing)
+ .debug_str     0x000000000000b0f2      0x176 obj/diagnostic.o
+                                       0x4276 (size before relaxing)
+ .debug_str     0x000000000000b268      0x13a obj/eeprom_app.o
                                        0x48b4 (size before relaxing)
- .debug_str     0x000000000000b010       0x86 obj/filter_avg.o
+ .debug_str     0x000000000000b3a2       0x86 obj/filter_avg.o
                                         0x28f (size before relaxing)
- .debug_str     0x000000000000b096      0x1dd obj/fw_ints.o
+ .debug_str     0x000000000000b428      0x1dd obj/fw_ints.o
                                        0x3e1b (size before relaxing)
- .debug_str     0x000000000000b273      0x17c obj/fw_mls_api.o
+ .debug_str     0x000000000000b605      0x17c obj/fw_mls_api.o
                                        0x44ba (size before relaxing)
- .debug_str     0x000000000000b3ef      0x65f obj/fw_mls_device_id.o
+ .debug_str     0x000000000000b781      0x65f obj/fw_mls_device_id.o
                                        0x4f2a (size before relaxing)
- .debug_str     0x000000000000ba4e       0xf1 obj/fw_premain.o
-                                       0x47c6 (size before relaxing)
- .debug_str     0x000000000000bb3f      0x175 obj/fw_ram_section_init.o
+ .debug_str     0x000000000000bde0       0xf1 obj/fw_premain.o
+                                       0x47e3 (size before relaxing)
+ .debug_str     0x000000000000bed1      0x175 obj/fw_ram_section_init.o
                                         0x2da (size before relaxing)
- .debug_str     0x000000000000bcb4      0x205 obj/fw_startup.o
-                                       0x3f52 (size before relaxing)
- .debug_str     0x000000000000beb9      0x470 obj/lin22.o
-                                       0x55ca (size before relaxing)
- .debug_str     0x000000000000c329       0xf2 obj/lin_api_config.o
+ .debug_str     0x000000000000c046      0x205 obj/fw_startup.o
+                                       0x3f6f (size before relaxing)
+ .debug_str     0x000000000000c24b      0x470 obj/lin22.o
+                                       0x55e7 (size before relaxing)
+ .debug_str     0x000000000000c6bb       0xf2 obj/lin_api_config.o
                                        0x493d (size before relaxing)
- .debug_str     0x000000000000c41b      0x384 obj/lin_cfg_sl.o
+ .debug_str     0x000000000000c7ad      0x384 obj/lin_cfg_sl.o
                                        0x4c4b (size before relaxing)
- .debug_str     0x000000000000c79f       0x84 obj/lin_core.o
+ .debug_str     0x000000000000cb31       0x84 obj/lin_core.o
                                        0x47dd (size before relaxing)
- .debug_str     0x000000000000c823      0x2a2 obj/lin_core_sl.o
+ .debug_str     0x000000000000cbb5      0x2a2 obj/lin_core_sl.o
                                        0x4b96 (size before relaxing)
- .debug_str     0x000000000000cac5      0x442 obj/lin_signals.o
+ .debug_str     0x000000000000ce57      0x442 obj/lin_signals.o
                                        0x4d46 (size before relaxing)
- .debug_str     0x000000000000cf07      0x2c4 obj/main.o
-                                       0x95a2 (size before relaxing)
- .debug_str     0x000000000000d1cb       0xb8 obj/protection.o
-                                       0x4097 (size before relaxing)
- .debug_str     0x000000000000d283      0x2de obj/pwm.o
-                                       0x4273 (size before relaxing)
- .debug_str     0x000000000000d561      0x225 obj/swtimer.o
+ .debug_str     0x000000000000d299      0x273 obj/main.o
+                                       0x95d4 (size before relaxing)
+ .debug_str     0x000000000000d50c       0xb8 obj/protection.o
+                                       0x40c9 (size before relaxing)
+ .debug_str     0x000000000000d5c4      0x2de obj/pwm.o
+                                       0x4290 (size before relaxing)
+ .debug_str     0x000000000000d8a2      0x225 obj/swtimer.o
                                        0x3feb (size before relaxing)
- .debug_str     0x000000000000d786      0x17e obj/systimer.o
-                                       0x3e81 (size before relaxing)
- .debug_str     0x000000000000d904      0x3dd obj/uart_plot.o
+ .debug_str     0x000000000000dac7      0x17e obj/systimer.o
+                                       0x3e9e (size before relaxing)
+ .debug_str     0x000000000000dc45      0x3dd obj/uart_plot.o
                                        0x7eae (size before relaxing)
- .debug_str     0x000000000000dce1      0x141 obj/unirom.o
+ .debug_str     0x000000000000e022      0x141 obj/unirom.o
                                        0x429f (size before relaxing)
- .debug_str     0x000000000000de22      0x183 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(lib_calculate_temperature.o)
+ .debug_str     0x000000000000e163      0x183 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(lib_calculate_temperature.o)
                                         0x5a2 (size before relaxing)
- .debug_str     0x000000000000dfa5       0xbc ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(lib_clock.o)
+ .debug_str     0x000000000000e2e6       0xbc ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(lib_clock.o)
                                        0x40f8 (size before relaxing)
- .debug_str     0x000000000000e061      0x2fa ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(eeprom_drv.o)
+ .debug_str     0x000000000000e3a2      0x2fa ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(eeprom_drv.o)
                                        0x4465 (size before relaxing)
- .debug_str     0x000000000000e35b       0xd8 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(fwversion.o)
+ .debug_str     0x000000000000e69c       0xd8 ../../code/camcu_platform/config/../lib/81332B02\lib81332.a(fwversion.o)
                                         0x25f (size before relaxing)
- .debug_str     0x000000000000e433      0x143 ../../code/camcu_platform/config/../lib/81332B02\libmath.a(atan.o)
+ .debug_str     0x000000000000e774      0x143 ../../code/camcu_platform/config/../lib/81332B02\libmath.a(atan.o)
                                         0x1ef (size before relaxing)
- .debug_str     0x000000000000e576      0x551 ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_diag_transfer.o)
+ .debug_str     0x000000000000e8b7      0x551 ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_diag_transfer.o)
                                        0x4729 (size before relaxing)
- .debug_str     0x000000000000eac7      0x187 ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_handler.o)
+ .debug_str     0x000000000000ee08      0x187 ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_handler.o)
                                        0x43f8 (size before relaxing)
- .debug_str     0x000000000000ec4e      0x200 ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_init.o)
+ .debug_str     0x000000000000ef8f      0x200 ../../code/camcu_platform/config/../lib/81332B02\libmlx_lin_api.a(mls_init.o)
                                        0x4515 (size before relaxing)
- .debug_str     0x000000000000ee4e      0x38b c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_gt_sf.o)
+ .debug_str     0x000000000000f18f      0x38b c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_gt_sf.o)
                                         0x417 (size before relaxing)
- .debug_str     0x000000000000f1d9       0x27 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_si_to_sf.o)
+ .debug_str     0x000000000000f51a       0x27 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_si_to_sf.o)
                                         0x405 (size before relaxing)
- .debug_str     0x000000000000f200      0x10d c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_clzsi2.o)
+ .debug_str     0x000000000000f541      0x10d c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_clzsi2.o)
                                         0x3cb (size before relaxing)
- .debug_str     0x000000000000f30d       0x1d c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_pack_sf.o)
+ .debug_str     0x000000000000f64e       0x1d c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_pack_sf.o)
                                         0x41e (size before relaxing)
- .debug_str     0x000000000000f32a        0xb c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_unpack_sf.o)
+ .debug_str     0x000000000000f66b        0xb c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_unpack_sf.o)
                                         0x400 (size before relaxing)
- .debug_str     0x000000000000f335       0x10 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_fpcmp_parts_sf.o)
+ .debug_str     0x000000000000f676       0x10 c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_fpcmp_parts_sf.o)
                                         0x3e4 (size before relaxing)
  .debug_str     0x0000000000000000      0x3ae c:/program files/melexis/melexis ide/plugins/com.melexis.mlxide.compiler.3.1.115.11_1.0.0.202206141129/compiler/bin/../lib/gcc/mlx16/7.5.0/mlx16-fx\libgcc.a(_clz.o)
 

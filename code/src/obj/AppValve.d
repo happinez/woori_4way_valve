@@ -39,9 +39,4 @@ obj/AppValve.o: AppValve.c \
  ../../code/camcu_platform/config/../include/81332B02/adc_refs.h \
  ../../code/camcu_platform/config/../include/81332B02/static_assert.h \
  ../../code/camcu_platform/config/../include/81332B02/lib_adc_inline_impl.h \
- app_sensor.h dcm_driver.h AppLin.h lin22.h eeprom_app.h \
- ../../code/camcu_platform/config/../include/81332B02/lib_softio.h \
- ../../code/camcu_platform/config/../include/81332B02/lib_gpio.h \
- ../../code/camcu_platform/config/../include/81332B02/lib_miscio.h \
- ../../code/camcu_platform/config/../include/81332B02/lib_gpio_inline_impl.h \
- ../../code/camcu_platform/config/../include/81332B02/lib_softio_inline_impl.h
+ app_sensor.h dcm_driver.h AppLin.h lin22.h eeprom_app.h

@@ -100,6 +100,9 @@ uint16_t u16_Duty_Dec_Range;
 
 uint16_t u16_IGN_PORT_CNT;
 
+uint16_t test_Timer = 0;
+uint16_t test_relese_Timer = 0;
+
 #pragma space none
 
 /* ---------------------------------------------
@@ -198,6 +201,24 @@ void system_timer_ISR()
 			motor.stall.maskTimer++;
 		}
 	}
+
+	if(test_Timer < 20000)
+	{
+		test_Timer++;
+	}
+	else
+	{
+		test_Timer = 20001;
+
+		if(test_relese_Timer < 20000)
+		{
+			test_relese_Timer++;
+		}
+		else
+		{
+			test_relese_Timer = 20001;
+		}
+	}
 	
 
 }
@@ -251,6 +272,12 @@ int main(void)
 #if DEBUG_GPIO_ENABLE == 1
 	softio_configureOutput(DEBUG_PIN_6);
 	softio_configureOutput(DEBUG_PIN_7);
+
+#endif
+
+#if NEW_CURCIT_TEST
+	softio_configureOutput(OUTPUT_PIN_5);
+	softio_set(OUTPUT_PIN_5);
 #endif
 	/* Application loop */
 	while (1u)
@@ -277,7 +304,26 @@ int main(void)
 			uartTask();
 #endif
 		}
-
+#if NEW_CURCIT_TEST
+		if(test_Timer > 20000)
+		{
+			//AppLinSleepEnter();
+			softio_clr(OUTPUT_PIN_5);
+			if(test_relese_Timer > 20000)
+			{
+				
+				//voltage = get_conv_vdda_voltage();
+			}
+			else
+			{
+				//voltage = 290;
+			}
+		}
+		else
+		{
+			//voltage = get_conv_vdda_voltage();
+		}
+#endif
 		background_Handler();
 	}
 
